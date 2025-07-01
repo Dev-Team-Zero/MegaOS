@@ -7,7 +7,7 @@
 #define PIT_COMMAND  0x43
 
 void init_pit(uint32_t freq) {
-    print_str("Initializeing pit...\n");
+    print_str("Initializing pit...\n");
     uint16_t divisor = PIT_FREQ / freq;
     outb(PIT_COMMAND, 0x36);
     outb(PIT_CHANNEL0, divisor & 0xFF);

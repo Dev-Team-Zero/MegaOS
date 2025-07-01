@@ -9,3 +9,5 @@ void init_heap();
 void* kmalloc(size_t size);
 void kfree(void* ptr);
 void check_heap_integrity();
+void* alloc_pages(size_t count);
+size_t get_total_free_pages();
