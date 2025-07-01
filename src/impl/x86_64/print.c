@@ -83,13 +83,7 @@ void print_char(char character) {
 
 void print_str(char* str) {
     for (size_t i = 0; str[i] != '\0'; i++) {
-        char character = (uint8_t) str[i];
-
-        if (character == '\0') {
-            return;
-        }
-
-        print_char(character);
+        print_char(str[i]);
     }
 }
 

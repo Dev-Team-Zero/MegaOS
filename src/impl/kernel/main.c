@@ -43,10 +43,7 @@ void kernel_main() {
     uint8_t exFATBuffer[512];
     print_str("Reading LBA0...\n");
     ata_pio_read28(0,1, exFATBuffer);
-    for (int i = 0; i < 16; i++) {
-        print_hex(exFATBuffer[i]);
-        print_str(" ");
-    }
+    
     print_str("\n");
     print_str("LBA0 read successfully.\n");
     print_str("Initializing filesystem...\n");

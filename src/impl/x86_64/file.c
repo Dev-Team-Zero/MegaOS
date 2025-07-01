@@ -88,10 +88,12 @@ void fs_close(const char* filename) {
 void fs_list_directory(const char* path) {
     (void)path; // Only root directory supported
     uint32_t first_data_sector = boot_sector.reserved_sector_count +
-    (boot_sector.num_fats * boot_sector.sectors_per_fat);
+        (boot_sector.num_fats * boot_sector.sectors_per_fat);
 
     uint32_t root_cluster = boot_sector.root_cluster;
     uint32_t root_dir_lba = first_data_sector + ((root_cluster - 2) * boot_sector.sectors_per_cluster);
+
+    fs_read(root_dir_lba, boot_sector.sectors_per_cluster, sector_buffer); // <-- Add this
 
     FAT32_DirEntry* entries = (FAT32_DirEntry*)sector_buffer;
     print_str("Root directory:\n");

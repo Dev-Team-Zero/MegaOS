@@ -68,23 +68,26 @@ void* kmalloc(size_t size) {
 void kfree(void* ptr) {
     if (!ptr) return;
     block_header_t* header = (block_header_t*)((uintptr_t)ptr - sizeof(block_header_t));
+    if (header->free) {
+        print_str("Warning: Double free detected in kfree!\n");
+        return;
+    }
     header->free = 1;
 
-    if (header->next && header->next->free) {
-        header->size += sizeof(block_header_t) + header->next->size;
-        header->next = header->next->next; 
+    // Merge with next free blocks
+    while (header->next && header->next->free) {
+        header->size += sizeof(block_header_t) + header->next->size + GUARD_SIZE;
+        header->next = header->next->next;
     }
 
+    // Merge with previous free block
     block_header_t* current = heap_head;
-    while (current) {
-        if (current->next == header) {
-            if (current->free) {
-                current->size += sizeof(block_header_t) + header->size;
-                current->next = header->next; // Remove header from the list
-            }
-            break;
-        }
+    while (current && current->next != header) {
         current = current->next;
+    }
+    if (current && current->free) {
+        current->size += sizeof(block_header_t) + header->size + GUARD_SIZE;
+        current->next = header->next;
     }
 }
 

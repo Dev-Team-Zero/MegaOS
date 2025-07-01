@@ -1,7 +1,8 @@
 #include "memory.h"
 
 #define PAGE_SIZE 4096
-#define MAX_MEMORY (1024 * 1024 * 512) 
+#define MAX_MEMORY (1024 * 1024 * 1024) 
+#define RESERVED_PAGES 256
 #define MAX_PAGES (MAX_MEMORY / PAGE_SIZE)
 
 static uint8_t page_bitmap[MAX_PAGES / 8];
@@ -26,7 +27,7 @@ void init_memory_manager(size_t mem_size) {
         page_bitmap[i] = 0; 
     }
 
-    for (size_t i = 0; i < 256; i++) {
+    for (size_t i = 0; i < RESERVED_PAGES; i++) {
         set_bit(i);
     }
 }
@@ -39,11 +40,12 @@ void* alloc_page() {
             return (void*)(i * PAGE_SIZE);
         }
     }
-    return 0; 
+    return NULL; 
 }
 
 void* alloc_pages(size_t count) {
-    for(size_t i = 0; i < total_pages - count; i++) {
+    if (count == 0 || count > total_pages) return NULL;
+    for(size_t i = 0; i <= total_pages - count; i++) { // <= instead of <
         int found = 1;
         for(size_t j = 0; j < count; j++) {
             if(test_bit(i + j)) {
@@ -61,7 +63,21 @@ void* alloc_pages(size_t count) {
 
 void free_page(void* addr) {
     size_t index = (size_t)addr / PAGE_SIZE;
+    if (((size_t)addr % PAGE_SIZE) != 0) {
+        print_str("Warning: free_page called with unaligned address!\n");
+        return;
+    }
     if (index < total_pages) {
         clear_bit(index);
     }
+}
+
+size_t get_total_free_pages() {
+    size_t free_count = 0;
+    for (size_t i = 0; i < total_pages; i++) {
+        if (!test_bit(i)) {
+            free_count++;
+        }
+    }
+    return free_count;
 }
