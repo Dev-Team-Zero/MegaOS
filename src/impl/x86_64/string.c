@@ -27,7 +27,7 @@ int strncmp(const char* s1, const char* s2, size_t n) {
 }
 
 int strlen(const char* str) {
-    int len = 0;
+    size_t len = 0;
     while (str[len]) len++;
     return len;
 }

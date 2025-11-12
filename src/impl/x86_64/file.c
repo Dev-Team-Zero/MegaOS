@@ -19,6 +19,9 @@ void fs_init(uint8_t* buffer, size_t size) {
     print_str("\n");
 
     FAT32_BootSector* bpb = (FAT32_BootSector*)buffer;
+
+    boot_sector = *bpb;
+
     print_str("OEM: ");
     for (int i = 0; i < 8; i++) {
         print_char(bpb->oem_name[i]);

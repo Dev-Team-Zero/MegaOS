@@ -1,4 +1,5 @@
 #include "memory.h"
+#include "print.h"
 
 #define PAGE_SIZE 4096
 #define MAX_MEMORY (1024 * 1024 * 1024) 

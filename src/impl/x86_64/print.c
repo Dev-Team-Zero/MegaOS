@@ -5,21 +5,13 @@
 const static size_t NUM_COLS = VGA_WIDTH;
 const static size_t NUM_ROWS = VGA_HEIGHT;
 
-struct Char {
-    uint8_t character;
-    uint8_t color;
-};
-
-struct Char* buffer = (struct Char*) 0xb8000;
+uint8_t color = PRINT_COLOR_WHITE | (PRINT_COLOR_BLACK << 4);
+Char* buffer = (Char*) 0xB8000;
+Char empty = (Char){.character = ' ', .color = color};
 size_t col = 0;
 size_t row = 0;
-uint8_t color = PRINT_COLOR_WHITE | PRINT_COLOR_BLACK << 4;
 
 void clear_row(size_t row) {
-    struct Char empty = (struct Char) {
-        character: ' ',
-        color: color,
-    };
 
     for (size_t col = 0; col < NUM_COLS; col++) {
         buffer[col + NUM_COLS * row] = empty;
@@ -44,7 +36,7 @@ void print_newline() {
 
     for (size_t row = 1; row < NUM_ROWS; row++) {
         for (size_t col = 0; col < NUM_COLS; col++) {
-            struct Char character = buffer[col + NUM_COLS * row];
+            Char character = buffer[col + NUM_COLS * row];
             buffer[col + NUM_COLS * (row - 1)] = character;
         }
     }
@@ -61,10 +53,7 @@ void print_char(char character) {
     if (character == '\b') {
         if (col > 0) {
             col--;
-            buffer[col + NUM_COLS * row] = (struct Char) {
-                character: ' ',
-                color: color,
-            };
+            buffer[col + NUM_COLS * row] = empty;
         }
         return;
     }
@@ -73,10 +62,7 @@ void print_char(char character) {
         print_newline();
     }
 
-    buffer[col + NUM_COLS * row] = (struct Char) {
-        character: (uint8_t) character,
-        color: color,
-    };
+    buffer[col + NUM_COLS * row] = (Char) {.character = (uint8_t) character, .color = color};
 
     col++;
 }
