@@ -6,8 +6,12 @@ const static size_t NUM_COLS = VGA_WIDTH;
 const static size_t NUM_ROWS = VGA_HEIGHT;
 
 uint8_t color = PRINT_COLOR_WHITE | (PRINT_COLOR_BLACK << 4);
-Char* buffer = (Char*) 0xB8000;
-Char empty = (Char){.character = ' ', .color = color};
+volatile Char* buffer = (volatile Char*) 0xB8000;
+Char empty = (Char){
+    .character = ' ',
+    .color = PRINT_COLOR_WHITE | (PRINT_COLOR_BLACK << 4)
+};
+
 size_t col = 0;
 size_t row = 0;
 
@@ -44,7 +48,7 @@ void print_newline() {
     clear_row(NUM_ROWS - 1);
 }
 
-void print_char(char character) {
+void print_char(const char character) {
     if (character == '\n') {
         print_newline();
         return;
@@ -67,7 +71,7 @@ void print_char(char character) {
     col++;
 }
 
-void print_str(char* str) {
+void print_str(const char* str) {
     for (size_t i = 0; str[i] != '\0'; i++) {
         print_char(str[i]);
     }
@@ -85,6 +89,7 @@ void print_hex(uint64_t value) {
 
 void print_set_color(uint8_t foreground, uint8_t background) {
     color = foreground + (background << 4);
+    empty.color = color;
 }
 
 void wait_for_keypress() {

@@ -23,15 +23,13 @@ docker build buildenv -t myos-buildenv
 
 - **Linux/Mac**:
 ```bash
-docker run --rm -it -v "$(pwd)/root/env:/env" myos-buildenv
+docker run --rm -it -v "${PWD}:/MegaOS" -w /MegaOS myos-buildenv
 ```
 
 - **Windows (PowerShell)**:
 ```powershell
-docker run --rm -it -v "${PWD}/root/env:/env" myos-buildenv
+docker run --rm -it -v "$(pwd):/MegaOS" -w /MegaOS myos-buildenv
 ```
-
-Note: Use `${PWD}` for PowerShell on Windows and `$(pwd)` for Linux/Mac.
 
 After completing step 4, you can build the project with the following command:
 
