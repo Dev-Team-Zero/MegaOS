@@ -10,9 +10,9 @@
 
 void kernel_main() {
     print_clear();
-    print_set_color(PRINT_COLOR_LIGHT_GREEN, PRINT_COLOR_BLACK);
+    print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
     print_str("Initializing memory manager...\n");
-    init_memory_manager(1024 * 1024 * 512); 
+    init_memory_manager(1024 * 1024 * 512); //512MB
     print_str("Memory manager initialized.\n");
 
     print_str("Initializing heap...\n");
@@ -26,7 +26,7 @@ void kernel_main() {
     }
     print_str("Page allocated successfully\n");
 
-    void* ptr = kmalloc(512 * 1024);
+    void* ptr = kmalloc(512 * 1024); //512KB
     if (!ptr) {
         print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
         print_str("Failed to allocate 512 kilobytes from heap.\n");

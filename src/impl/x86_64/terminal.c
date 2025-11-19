@@ -21,6 +21,10 @@ typedef struct{
 
 uint16_t* video_memory = (uint16_t*)0xB8000;
 size_t inside_name = 0;
+size_t free_pages;
+
+static NamedPointer named_pointers[MAX_NAMED_POINTERS];
+static int named_pointer_count = 0;
 
 int cursor_x = 0;
 int cursor_y = 0;
@@ -156,7 +160,14 @@ void handle_command(const char* cmd) {
             print_str("\n");
         }
         
-    }else {
+    } else if(strncmp(cmd, "freepages", 9) == 0){
+        free_pages = get_total_free_pages();
+        print_str("Free pages: ");
+        char *buf = kmalloc(sizeof(size_t));
+        strcpy(buf, (char*)free_pages);
+        print_str(buf);
+        print_str("\n");
+    } else {
         print_str("Unknown command: ");
         print_str(cmd);
         print_str("\n");
@@ -186,9 +197,6 @@ void process_key(char key) {
 void start_symbol(){
     print_str("> ");
 }
-
-static NamedPointer named_pointers[MAX_NAMED_POINTERS];
-static int named_pointer_count = 0;
 
 void set_named_pointer(const char* name, void* value) {
     for(int i = 0; i < named_pointer_count; i++) {

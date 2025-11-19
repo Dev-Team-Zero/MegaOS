@@ -1,13 +1,10 @@
 FROM randomdude/gcc-cross-x86_64-elf
 
-RUN apt-get update 
-RUN apt-get upgrade -y
-RUN apt-get install -y nasm
-RUN apt-get install -y xorriso
-RUN apt-get install -y grub-pc-bin
-RUN apt-get install -y grub-common
-RUN apt-get install -y qemu-kvm virt-manager bridge-utils
-RUN apt-get install -y libgtk-3-dev
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+      nasm xorriso grub-pc-bin grub-common qemu-kvm virt-manager bridge-utils libgtk-3-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 VOLUME /root/env
 WORKDIR /root/env
