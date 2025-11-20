@@ -18,6 +18,7 @@
         "strings.h": "c",
         "ata_pio_read.h": "c",
         "memory.h": "c",
-        "file.h": "c"
+        "file.h": "c",
+        "typeinfo": "c"
     }
 }

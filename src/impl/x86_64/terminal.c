@@ -8,12 +8,6 @@
 #include "memory.h"
 #include "ata_pio_read.h"
 
-#define MAX_NAMED_POINTERS 32
-
-void set_named_pointer(const char* name, void* value);
-void* get_named_pointer(const char* name);
-void remove_after_space(char* str);
-
 typedef struct{
     const char* name;
     void* value;
@@ -90,22 +84,9 @@ void handle_command(const char* cmd) {
     } else if (strcmp(cmd, "\n") == 0 || cmd[0] == '\0') {
         
     } else if(strncmp(cmd, "allocpage", 9) == 0){
-        const char* name_start = cmd + 9;
-        while(*name_start == ' ') name_start++; 
-        char name_buf[64];
-        strncpy(name_buf, name_start, sizeof(name_buf)-1);
-        name_buf[sizeof(name_buf)-1] = '\0';
-        remove_after_space(name_buf);
-        void* page = alloc_page();
-        set_named_pointer(name_buf, page);
-        print_str("Allocated page named: ");
-        print_str(name_buf);
-        print_str("\n");
-        if (!page) {
-            print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
-            print_str("Failed to allocate page\n");
-            return;
-        }
+        const char* name = cmd+9;
+        while (*name == ' ') name++;
+        command_alloc_page(name);
     } else if (strncmp(cmd, "writepage", 9) == 0) {
         const char* args = cmd + 9;
         while (*args == ' ') args++;
@@ -171,6 +152,28 @@ void handle_command(const char* cmd) {
         print_str("Unknown command: ");
         print_str(cmd);
         print_str("\n");
+    }
+}
+
+void command_alloc_page(const char* name){
+    for(size_t i = 0; i < named_pointer_count;i++){
+        if(strcmp(named_pointers[i].name, name) == 0) print_str("Name already in use.\n");return;
+        else if(named_pointer_count < MAX_NAMED_POINTERS) named_pointers[i].name = name; named_pointer_count++;
+        else print_str("Max named pointers reached.\n");
+    }
+    for(size_t i = 0;i < named_pointer_count;i++){
+        if(strcmp(named_pointers[i].name, name) == 0){
+            (void*)named_pointers[i].value = alloc_page();
+            print_str("Allocated page named: ");    
+            print_str(name);
+            print_str("\n");
+            if(!named_pointers[i].value){
+                print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
+                print_str("Failed to allocate page\n");
+                print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
+                return;
+            }
+        }
     }
 }
 
