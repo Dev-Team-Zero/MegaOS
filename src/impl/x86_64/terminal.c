@@ -8,11 +8,6 @@
 #include "memory.h"
 #include "ata_pio_read.h"
 
-typedef struct{
-    const char* name;
-    void* value;
-} NamedPointer;
-
 uint16_t* video_memory = (uint16_t*)0xB8000;
 size_t inside_name = 0;
 size_t free_pages;
@@ -113,24 +108,15 @@ void handle_command(const char* cmd) {
             print_str("Usage: writepage <name> <data>\n");
         }
     } else if (strncmp(cmd, "readpage", 8) == 0) {
-        const char* name_start = cmd + 8;
-        while (*name_start == ' ') name_start++;
-        char name_buf[64];
-        strncpy(name_buf, name_start, sizeof(name_buf)-1);
-        name_buf[sizeof(name_buf)-1] = '\0';
-        remove_after_space(name_buf);
-
-        void* page = get_named_pointer(name_buf);
-        if (page) {
-            print_str("Contents of page ");
-            print_str(name_buf);
-            print_str(": ");
-            print_str((char*)page); 
-            print_str("\n");
-        } else {
-            print_str("Page not found: ");
-            print_str(name_buf);
-            print_str("\n");
+        const char* name = cmd + 8;
+        while(*name == ' ') name++;
+        for(size_t i = 0;i < MAX_NAMED_POINTERS;i++){
+            if(strcmp(named_pointers[i].name, name) == 0){
+                print_str("Content of page: ");
+                print_str((const char*)named_pointers[i].value);
+                print_str("\n");
+                return;
+            } else {print_str("NOOOO\n");}
         }
     } else if(strncmp(cmd, "writetolba0", 11) == 0){
         void* page = get_named_pointer(cmd+12);
@@ -155,26 +141,27 @@ void handle_command(const char* cmd) {
     }
 }
 
-void command_alloc_page(const char* name){
+void command_alloc_page(const char* name){ 
     for(size_t i = 0; i < named_pointer_count;i++){
-        if(strcmp(named_pointers[i].name, name) == 0) print_str("Name already in use.\n");return;
-        else if(named_pointer_count < MAX_NAMED_POINTERS) named_pointers[i].name = name; named_pointer_count++;
-        else print_str("Max named pointers reached.\n");
+        if(strcmp(named_pointers[i].name, name) == 0){print_str("Name already in use.\n");return;} 
     }
-    for(size_t i = 0;i < named_pointer_count;i++){
-        if(strcmp(named_pointers[i].name, name) == 0){
-            (void*)named_pointers[i].value = alloc_page();
-            print_str("Allocated page named: ");    
-            print_str(name);
-            print_str("\n");
-            if(!named_pointers[i].value){
-                print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
-                print_str("Failed to allocate page\n");
-                print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
-                return;
-            }
-        }
+    if(named_pointer_count >= MAX_NAMED_POINTERS){
+        print_str("Reached the max number of pages.\n");
+        return;
     }
+    void* page = alloc_page();
+    if(!page){
+        print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
+        print_str("Failed to allocate page\n");
+        print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
+        return;
+    }
+    named_pointers[named_pointer_count].name = name; 
+    named_pointers[named_pointer_count].value = page;
+    print_str("Allocated page named: ");    
+    print_str(name);
+    print_str("\n");
+    named_pointer_count++;
 }
 
 void process_key(char key) {
