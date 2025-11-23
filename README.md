@@ -38,9 +38,7 @@ After completing step 4, you can build the project with the following command:
 make build-x86_64
 ```
 
-There is already a build with the version you downloaded.
-
-## Usage
+## Running it
 
 After compilation, you can run the `kernel.iso` found in `dist\x86_64` in VirtualBox:
 1. Open VirtualBox and create a new virtual machine.
@@ -130,6 +128,8 @@ There are many features, here are arranged by the library they came from:
         The in instruction 16 bytes.
         - **Parameter:**
             - `port`: The I/O port wich will get the value.
+
+#### More to be added in the future updates
 
 ## Contributing
 
