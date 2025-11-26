@@ -8,6 +8,11 @@
 #include "memory.h"
 #include "ata_pio_read.h"
 
+typedef struct {
+    const char* name;
+    void* data;
+} Page;
+
 uint16_t* video_memory = (uint16_t*)0xB8000;
 size_t inside_name = 0;
 size_t free_pages;
@@ -236,4 +241,34 @@ void command_alloc_page(const char* name){
     print_str(name);
     print_str("\n");
     named_pointer_count++;
+}
+
+//--------------------------TEST----CODE------------------------------------------
+
+static Page page[32];
+int pages = 0;
+
+void aloc_page_name(const char* name){
+    if(pages >= 32){
+        print_str("Max pages allocated.\n");
+        return;
+    }
+    if(!data){
+        print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
+        print_str("Failed to allocate page.\n");
+        print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
+        return;
+    }
+    page[pages].name = name;
+    page[pages].data = alloc_page();
+    pages++;
+    print_str("Allocated apge: ");
+    print_str(name);
+    print_str("\n");
+}
+
+void remove_last_page(){
+    free_page(page[pages].data);
+    page[pages].name = "";
+    pages--;
 }
