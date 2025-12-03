@@ -8,10 +8,10 @@
 #define MAX_CMD_LEN 128
 #define MAX_NAMED_POINTERS 32
 
-typedef struct{
+typedef struct {
     const char* name;
-    void* value;
-} NamedPointer;
+    void* data;
+} Page;
 
 
 void update_cursor();
@@ -22,7 +22,6 @@ void process_key(char key);
 char scancode_to_ascii(uint8_t scancode);
 void start_symbol();
 
-void set_named_pointer(const char* name, void* value);
-void* get_named_pointer(const char* name);
+void aloc_page_name(const char* name);
+void write_to_page(const char* name, void* data);
 void remove_after_space(char* str);
-void command_alloc_page(const char* name);

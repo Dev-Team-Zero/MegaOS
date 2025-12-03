@@ -8,17 +8,12 @@
 #include "memory.h"
 #include "ata_pio_read.h"
 
-typedef struct {
-    const char* name;
-    void* data;
-} Page;
+static Page page[32];
+int pages = 0;
 
 uint16_t* video_memory = (uint16_t*)0xB8000;
 size_t inside_name = 0;
 size_t free_pages;
-
-static NamedPointer named_pointers[MAX_NAMED_POINTERS];
-static int named_pointer_count = 0;
 
 int cursor_x = 0;
 int cursor_y = 0;
@@ -84,81 +79,13 @@ void handle_command(const char* cmd) {
     } else if (strcmp(cmd, "\n") == 0 || cmd[0] == '\0') {
         
     } else if(strncmp(cmd, "allocpage", 9) == 0){
-        const char* name_start = cmd+9;
-        while (*name_start == ' ') name_start++;
-        char name_buf[64];
-        strncpy(name_buf, name_start, sizeof(name_buf)-1);
-        name_buf[sizeof(name_buf)-1] = '\0';
-        remove_after_space(name_buf);
-        if(get_named_pointer(name_buf)) {
-            print_str("Name already in use.\n");
-            return;
-        }
-        void* page = alloc_page();
-        if(!page) {
-            print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
-            print_str("Failed to allocate page\n");
-            print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
-            return;
-        }
-        set_named_pointer(name_buf, page);
-        print_str("Allocated page named: ");    
-        print_str(name_buf);
-        print_str("\n");
+        aloc_page_name(cmd + 10);
     } else if (strncmp(cmd, "writepage", 9) == 0) {
-        const char* args = cmd + 9;
-        while (*args == ' ') args++;
-        char name_buf[64];
-        strncpy(name_buf, args, sizeof(name_buf)-1);
-        name_buf[sizeof(name_buf)-1] = '\0';
-        remove_after_space(name_buf);
-
-        char* data_start = strchr(args, ' ');
-        if (data_start) {
-            data_start++;
-            void* page = get_named_pointer(name_buf);
-            if (page) {
-                strncpy((char*)page, data_start, 4096); 
-                print_str("Wrote to page: ");
-                print_str(name_buf);
-                print_str("\n");
-            } else {
-                print_str("Page not found: ");
-                print_str(name_buf);
-                print_str("\n");
-            }
-        } else {
-            print_str("Usage: writepage <name> <data>\n");
-        }
+        
     } else if (strncmp(cmd, "readpage", 8) == 0) {
-        const char* name = cmd + 8;
-        while(*name == ' ') name++;
-        void* page = get_named_pointer(name);
-        if(page) {
-            print_str("Content of page: ");
-            print_str((const char*)page);
-            print_str("\n");
-        } else {
-            print_str("Page not found: ");
-            print_str(name);
-            print_str("\n");
-        }
-    } else if(strncmp(cmd, "writetolba0", 11) == 0){
-        void* page = get_named_pointer(cmd+12);
-        if (page) {
-            ata_pio_write28(0,1,page);
-        } else {
-            print_str("Page not found: ");
-            print_str("\n");
-        }
         
     } else if(strncmp(cmd, "freepages", 9) == 0){
-        free_pages = get_total_free_pages();
-        print_str("Free pages: ");
-        char *buf = kmalloc(sizeof(size_t));
-        strcpy(buf, (char*)free_pages);
-        print_str(buf);
-        print_str("\n");
+        
     } else {
         print_str("Unknown command: ");
         print_str(cmd);
@@ -190,28 +117,9 @@ void start_symbol(){
     print_str("> ");
 }
 
-void set_named_pointer(const char* name, void* value) {
-    for(int i = 0; i < named_pointer_count; i++) {
-        if(strcmp(named_pointers[i].name, name) == 0) {
-            named_pointers[i].value = value;
-            return;
-        }
-    }
-    if(named_pointer_count < MAX_NAMED_POINTERS) {
-        named_pointers[named_pointer_count].name = name;
-        named_pointers[named_pointer_count].value = value;
-        named_pointer_count++;
-    }
-}
 
-void* get_named_pointer(const char* name) {
-    for(int i = 0; i < named_pointer_count; i++) {
-        if(strcmp(named_pointers[i].name, name) == 0) {
-            return named_pointers[i].value;
-        }
-    }
-    return NULL;
-}
+
+
 
 void remove_after_space(char* str) {
     char* space = strchr(str, ' ');
@@ -220,51 +128,36 @@ void remove_after_space(char* str) {
     }
 }
 
-void command_alloc_page(const char* name){ 
-    for(size_t i = 0; i < named_pointer_count;i++){
-        if(strcmp(named_pointers[i].name, name) == 0){print_str("Name already in use.\n");return;} 
-    }
-    if(named_pointer_count >= MAX_NAMED_POINTERS){
-        print_str("Reached the max number of pages.\n");
-        return;
-    }
-    void* page = alloc_page();
-    if(!page){
-        print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
-        print_str("Failed to allocate page\n");
-        print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
-        return;
-    }
-    named_pointers[named_pointer_count].name = name; 
-    named_pointers[named_pointer_count].value = page;
-    print_str("Allocated page named: ");    
-    print_str(name);
-    print_str("\n");
-    named_pointer_count++;
-}
-
 //--------------------------TEST----CODE------------------------------------------
-
-static Page page[32];
-int pages = 0;
 
 void aloc_page_name(const char* name){
     if(pages >= 32){
         print_str("Max pages allocated.\n");
         return;
     }
-    if(!data){
+    page[pages].name = name;
+    page[pages].data = alloc_page();
+    if(!page[pages].data){
         print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
         print_str("Failed to allocate page.\n");
         print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
         return;
     }
-    page[pages].name = name;
-    page[pages].data = alloc_page();
     pages++;
     print_str("Allocated apge: ");
     print_str(name);
     print_str("\n");
+}
+
+void write_to_page(const char* name, void* data){
+    int pos = 0;
+    for(size_t i = 0;i < 32;i++){
+        if(page[i].name = name){
+            pos = i;
+            break;
+        }
+    }
+    page[pos].data = data;
 }
 
 void remove_last_page(){
