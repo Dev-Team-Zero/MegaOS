@@ -79,13 +79,57 @@ void handle_command(const char* cmd) {
     } else if (strcmp(cmd, "\n") == 0 || cmd[0] == '\0') {
         
     } else if(strncmp(cmd, "allocpage", 9) == 0){
-        aloc_page_name(cmd + 10);
+        if(cmd[9] == ' ' && cmd[10] != '\0'){
+            alloc_page_name(cmd+10);
+        } else {
+            print_str("Usage: allocpage <name>\n");
+        }
     } else if (strncmp(cmd, "writepage", 9) == 0) {
-        
+        if (cmd[9] == ' ' && cmd[10] != '\0') {
+        char* name = (char*)cmd + 10;
+        char* text = strchr(name, ' ');
+        if (!text) {
+            print_str("Usage: writepage <name> <text>\n");
+        } else {
+            *text = '\0';
+            text++;  
+            write_to_page(name, text);
+            print_str("Wrote to page: ");
+            print_str(name);
+            print_str("\n");
+        }
+    } else {
+        print_str("Usage: writepage <name> <text>\n");
+    }
     } else if (strncmp(cmd, "readpage", 8) == 0) {
-        
-    } else if(strncmp(cmd, "freepages", 9) == 0){
-        
+        if (cmd[8] == ' ' && cmd[9] != '\0') {
+        char* name = (char*)cmd + 9;
+        int found = -1;
+        for (int i = 0; i < pages; i++) {
+            if (strcmp(page[i].name, name) == 0) {
+                found = i;
+                break;
+            }
+        }
+        if (found == -1) {
+            print_str("Page not found.\n");
+        } else {
+            print_str("Page ");
+            print_str(name);
+            print_str(": ");
+            print_str((char*)page[found].data);
+            print_str("\n");
+        }
+    } else {
+        print_str("Usage: readpage <name>\n");
+    }
+    } else if(strncmp(cmd, "freelastpage", 12) == 0){
+        if (pages == 0) {
+            print_str("No pages to free.\n");
+        } else {
+            remove_last_page();
+            print_str("Freed last allocated page.\n");
+        }
     } else {
         print_str("Unknown command: ");
         print_str(cmd);
@@ -117,10 +161,6 @@ void start_symbol(){
     print_str("> ");
 }
 
-
-
-
-
 void remove_after_space(char* str) {
     char* space = strchr(str, ' ');
     if (space) {
@@ -128,14 +168,14 @@ void remove_after_space(char* str) {
     }
 }
 
-//--------------------------TEST----CODE------------------------------------------
-
-void aloc_page_name(const char* name){
+void alloc_page_name(const char* name){
     if(pages >= 32){
         print_str("Max pages allocated.\n");
         return;
     }
-    page[pages].name = name;
+    static char stored_names[32][64];  
+    strcpy(stored_names[pages], name);
+    page[pages].name = stored_names[pages];
     page[pages].data = alloc_page();
     if(!page[pages].data){
         print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
@@ -143,25 +183,37 @@ void aloc_page_name(const char* name){
         print_set_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLACK);
         return;
     }
-    pages++;
-    print_str("Allocated apge: ");
-    print_str(name);
+    print_str("Allocated page: ");
+    print_str(stored_names[pages]);
     print_str("\n");
+    pages++;
 }
 
-void write_to_page(const char* name, void* data){
-    int pos = 0;
-    for(size_t i = 0;i < 32;i++){
-        if(page[i].name = name){
+void write_to_page(const char* name, const char* data){
+    int pos = -1;
+    for(size_t i = 0; i < pages; i++){
+        if(strcmp(page[i].name, name) == 0){
             pos = i;
             break;
         }
     }
-    page[pos].data = data;
+    if (pos == -1){
+        print_str("Page not found.\n");
+        return;
+    }
+    char* page_mem = (char*)page[pos].data;
+    size_t len = strlen(data);
+    if (len > 4095)
+        len = 4095;
+
+    memcpy(page_mem, data, len);
+    page_mem[len] = '\0'; 
+    print_str("Page written.\n");
 }
 
 void remove_last_page(){
-    free_page(page[pages].data);
-    page[pages].name = "";
+    if (pages == 0) return;
+    free_page(page[pages - 1].data);
+    page[pages - 1].name = "";
     pages--;
 }

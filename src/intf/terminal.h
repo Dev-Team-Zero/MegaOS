@@ -22,6 +22,7 @@ void process_key(char key);
 char scancode_to_ascii(uint8_t scancode);
 void start_symbol();
 
-void aloc_page_name(const char* name);
-void write_to_page(const char* name, void* data);
+void alloc_page_name(const char* name);
+void write_to_page(const char* name, const char* data);
 void remove_after_space(char* str);
+void remove_last_page();
