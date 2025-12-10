@@ -1,9 +1,5 @@
 #include "memory.h"
-
-#define PAGE_SIZE 4096
-#define MAX_MEMORY (1024 * 1024 * 1024) 
-#define RESERVED_PAGES 256
-#define MAX_PAGES (MAX_MEMORY / PAGE_SIZE)
+#include "print.h"
 
 static uint8_t page_bitmap[MAX_PAGES / 8];
 static size_t total_pages;
@@ -45,7 +41,7 @@ void* alloc_page() {
 
 void* alloc_pages(size_t count) {
     if (count == 0 || count > total_pages) return NULL;
-    for(size_t i = 0; i <= total_pages - count; i++) { // <= instead of <
+    for(size_t i = 0; i <= total_pages - count; i++) {
         int found = 1;
         for(size_t j = 0; j < count; j++) {
             if(test_bit(i + j)) {

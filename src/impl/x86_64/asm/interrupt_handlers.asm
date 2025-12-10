@@ -2,9 +2,11 @@ global interrupt_handler_0
 global interrupt_handler_1
 global isr_irq2
 global interrupt_handler_3
+global interrupt_handler_14
 extern handle_keyboard_interrupt
 extern handle_irq2_interrupt
 extern handle_com2_com4_interrupt
+extern handle_irq14_interrupt
 
 section .text
 align 16
@@ -101,6 +103,40 @@ interrupt_handler_3:
     push r14
     push r15
     call handle_com2_com4_interrupt
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r9
+    pop r8
+    pop rdi
+    pop rsi
+    pop rbp
+    pop rbx
+    pop rdx
+    pop rcx
+    pop rax
+    iretq
+
+interrupt_handler_14:
+    push rax
+    push rcx
+    push rdx
+    push rbx
+    push rbp
+    push rsi
+    push rdi
+    push r8
+    push r9
+    push r10
+    push r11
+    push r12
+    push r13
+    push r14
+    push r15
+    call handle_irq14_interrupt
     pop r15
     pop r14
     pop r13

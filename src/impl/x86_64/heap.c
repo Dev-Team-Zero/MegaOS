@@ -3,12 +3,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define PAGE_SIZE 4096
-#define HEAP_START 0x200000
-#define HEAP_SIZE  0x100000
-#define GUARD_PATTERN 0xDEADBEEF
-#define GUARD_SIZE sizeof(uintptr_t)
-
 typedef struct block_header {
     size_t size;
     int free;

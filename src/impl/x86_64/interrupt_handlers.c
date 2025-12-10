@@ -2,6 +2,7 @@
 #include "io.h"
 #include "print.h"
 #include "terminal.h"
+#include "ata_pio_read.h"
 
 #define PIC1_COMMAND 0x20
 #define PIC1_DATA    0x21
@@ -56,6 +57,13 @@ void handle_irq2_interrupt(){
 void handle_com2_com4_interrupt(){
     print_str("IRQ3 seted up.\n");
     send_eoi(3);
+}
+
+void handle_irq14_interrupt(){
+    inb(ATA_PRIMARY_IO + 7);
+    send_eoi(0x8);
+    send_eoi(0x0);
+    print_str("IRQ14 handled.\n");
 }
 
 char scancode_to_ascii(uint8_t scancode) {

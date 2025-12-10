@@ -23,15 +23,13 @@ docker build buildenv -t myos-buildenv
 
 - **Linux/Mac**:
 ```bash
-docker run --rm -it -v "$(pwd)/root/env:/env" myos-buildenv
+docker run --rm -it -v "${PWD}:/MegaOS" -w /MegaOS myos-buildenv
 ```
 
 - **Windows (PowerShell)**:
 ```powershell
-docker run --rm -it -v "${PWD}/root/env:/env" myos-buildenv
+docker run --rm -it -v "$(pwd):/MegaOS" -w /MegaOS myos-buildenv
 ```
-
-Note: Use `${PWD}` for PowerShell on Windows and `$(pwd)` for Linux/Mac.
 
 After completing step 4, you can build the project with the following command:
 
@@ -40,9 +38,7 @@ After completing step 4, you can build the project with the following command:
 make build-x86_64
 ```
 
-There is already a build with the version you downloaded.
-
-## Usage
+## Running it
 
 After compilation, you can run the `kernel.iso` found in `dist\x86_64` in VirtualBox:
 1. Open VirtualBox and create a new virtual machine.
@@ -132,6 +128,8 @@ There are many features, here are arranged by the library they came from:
         The in instruction 16 bytes.
         - **Parameter:**
             - `port`: The I/O port wich will get the value.
+
+#### More to be added in the future updates
 
 ## Contributing
 

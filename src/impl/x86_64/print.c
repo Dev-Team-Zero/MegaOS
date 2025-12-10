@@ -5,21 +5,17 @@
 const static size_t NUM_COLS = VGA_WIDTH;
 const static size_t NUM_ROWS = VGA_HEIGHT;
 
-struct Char {
-    uint8_t character;
-    uint8_t color;
+uint8_t color = PRINT_COLOR_WHITE | (PRINT_COLOR_BLACK << 4);
+volatile Char* buffer = (volatile Char*) 0xB8000;
+Char empty = (Char){
+    .character = ' ',
+    .color = PRINT_COLOR_WHITE | (PRINT_COLOR_BLACK << 4)
 };
 
-struct Char* buffer = (struct Char*) 0xb8000;
 size_t col = 0;
 size_t row = 0;
-uint8_t color = PRINT_COLOR_WHITE | PRINT_COLOR_BLACK << 4;
 
 void clear_row(size_t row) {
-    struct Char empty = (struct Char) {
-        character: ' ',
-        color: color,
-    };
 
     for (size_t col = 0; col < NUM_COLS; col++) {
         buffer[col + NUM_COLS * row] = empty;
@@ -44,7 +40,7 @@ void print_newline() {
 
     for (size_t row = 1; row < NUM_ROWS; row++) {
         for (size_t col = 0; col < NUM_COLS; col++) {
-            struct Char character = buffer[col + NUM_COLS * row];
+            Char character = buffer[col + NUM_COLS * row];
             buffer[col + NUM_COLS * (row - 1)] = character;
         }
     }
@@ -52,7 +48,7 @@ void print_newline() {
     clear_row(NUM_ROWS - 1);
 }
 
-void print_char(char character) {
+void print_char(const char character) {
     if (character == '\n') {
         print_newline();
         return;
@@ -61,10 +57,7 @@ void print_char(char character) {
     if (character == '\b') {
         if (col > 0) {
             col--;
-            buffer[col + NUM_COLS * row] = (struct Char) {
-                character: ' ',
-                color: color,
-            };
+            buffer[col + NUM_COLS * row] = empty;
         }
         return;
     }
@@ -73,15 +66,12 @@ void print_char(char character) {
         print_newline();
     }
 
-    buffer[col + NUM_COLS * row] = (struct Char) {
-        character: (uint8_t) character,
-        color: color,
-    };
+    buffer[col + NUM_COLS * row] = (Char) {.character = (uint8_t) character, .color = color};
 
     col++;
 }
 
-void print_str(char* str) {
+void print_str(const char* str) {
     for (size_t i = 0; str[i] != '\0'; i++) {
         print_char(str[i]);
     }
@@ -99,6 +89,7 @@ void print_hex(uint64_t value) {
 
 void print_set_color(uint8_t foreground, uint8_t background) {
     color = foreground + (background << 4);
+    empty.color = color;
 }
 
 void wait_for_keypress() {

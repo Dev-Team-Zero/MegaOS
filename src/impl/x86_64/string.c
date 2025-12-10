@@ -27,7 +27,7 @@ int strncmp(const char* s1, const char* s2, size_t n) {
 }
 
 int strlen(const char* str) {
-    int len = 0;
+    size_t len = 0;
     while (str[len]) len++;
     return len;
 }
@@ -39,4 +39,24 @@ void* memcpy(void* dest, const void* src, size_t count) {
         dst[i] = source[i];
     }
     return dest;
+}
+
+char* strchr(const char* s, int c) {
+    while (*s) {
+        if (*s == (char)c) return (char*)s;
+        s++;
+    }
+    return NULL;
+}
+
+void strncpy(char* dest, const char* src, size_t n) {
+    size_t i;
+    for (i = 0; i < n && src[i]; i++) dest[i] = src[i];
+    for (; i < n; i++) dest[i] = '\0';
+}
+
+char* strcpy(char* dest, const char* src) {
+    char* ret = dest;
+    while ((*dest++ = *src++));
+    return ret;
 }
