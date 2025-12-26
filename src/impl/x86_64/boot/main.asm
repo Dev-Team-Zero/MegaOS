@@ -4,7 +4,10 @@ extern long_mode_start
 section .text
 bits 32
 start:
+	cld
+	cli
 	mov esp, stack_top
+	and esp, 0xFFFFFFF0
 
 	call check_multiboot
 	call check_cpuid
@@ -15,8 +18,6 @@ start:
 
 	lgdt [gdt64.pointer]
 	jmp gdt64.code_segment:long_mode_start
-
-	hlt
 
 check_multiboot:
     cmp eax, 0x36d76289
@@ -71,8 +72,7 @@ setup_page_tables:
 
     mov ecx, 0
 .loop:
-    mov eax, 0x200000 
-	mul ecx
+    imul eax, ecx, 0x200000
 	or eax, 0b10000011 
 	mov [page_table_l2 + ecx * 8], eax
 
