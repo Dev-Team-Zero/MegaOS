@@ -8,6 +8,7 @@ RUN apt-get install -y grub-pc-bin
 RUN apt-get install -y grub-common
 RUN apt-get install -y qemu-kvm virt-manager bridge-utils
 RUN apt-get install -y libgtk-3-dev
+RUN apt-get install -y qemu-system-gui
 
 VOLUME /root/env
 WORKDIR /root/env

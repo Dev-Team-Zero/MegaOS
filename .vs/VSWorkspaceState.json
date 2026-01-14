@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\dist",
+    "\\src",
+    "\\src\\impl",
+    "\\src\\impl\\x86_64",
+    "\\src\\intf"
+  ],
+  "SelectedNode": "\\src\\intf\\terminal.h",
+  "PreviewInSolutionExplorer": false
+}
