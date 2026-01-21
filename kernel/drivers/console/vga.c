@@ -1,7 +1,6 @@
 #include "vga.h"
 
-size_t terminal_row;
-size_t terminal_column;
+size_t terminal_row, terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
