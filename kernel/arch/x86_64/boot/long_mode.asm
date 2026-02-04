@@ -1,8 +1,9 @@
-global long_mode_start
+bits 64
+
 extern kernel_main
 
 section .text
-bits 64
+global long_mode_start
 long_mode_start:
     mov ax, 0
     mov ss, ax

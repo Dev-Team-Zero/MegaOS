@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\dist",
-    "\\src",
-    "\\src\\impl",
-    "\\src\\impl\\x86_64",
-    "\\src\\intf"
+    ""
   ],
-  "SelectedNode": "\\src\\intf\\terminal.h",
+  "SelectedNode": "\\SECURITY.md",
   "PreviewInSolutionExplorer": false
 }
