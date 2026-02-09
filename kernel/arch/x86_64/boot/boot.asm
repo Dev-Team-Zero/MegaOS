@@ -8,6 +8,18 @@ bits 32
 
 extern long_mode_start
 
+section .data
+align 8
+gdt_start:
+    dq 0x0000000000000000
+    dq 0x00AF9A000000FFFF    ; 64-bit code segment
+    dq 0x00CF92000000FFFF    ; data segment
+gdt_end:
+
+gdt_descriptor:
+    dw gdt_end - gdt_start - 1
+    dd gdt_start
+
 section .multiboot
 align 4
 dd MAGIC
@@ -29,42 +41,54 @@ section .text
 global _start
 _start:
 
-    setup_page_tables:
+    ;setup_page_tables:
+    ;    mov eax, l3
+    ;    or eax, 0b11
+    ;    mov [l4], eax
+        cli
+        
+        mov esp, stack_top
+
+        xor edx, edx
+
         mov eax, l3
-        or eax, 0b11
+        or eax, 0x03       
         mov [l4], eax
+        mov dword [l4 + 4], edx
 
         mov eax, l2
-        or eax, 0b11
+        or eax, 0x03
         mov [l3], eax
+        mov dword [l3 + 4], edx
 
-        mov ecx, 0
-    .loop:
-        imul eax, ecx, 0x200000
-        or eax, 0b10000011 
-        mov [l2 + ecx * 8], eax
-
+        xor ecx, ecx
+    .pd_loop:
+        mov eax, ecx
+        shl eax, 21         
+        or eax, 0x83        
+        mov [l2 + ecx*8], eax
+        mov dword [l2 + ecx*8 + 4], edx
         inc ecx
-        cmp ecx, 512 
-        jne .loop 
+        cmp ecx, 512
+        jne .pd_loop
+
+        lgdt [gdt_descriptor]
+
+        mov eax, cr4
+        or eax, 1 << 5
+        mov cr4, eax
+
+        mov eax, l4
+        mov cr3, eax
+
+        mov ecx, 0xC0000080
+        rdmsr
+        or eax, 1 << 8
+        wrmsr
+
+        mov eax, cr0
+        or eax, 1 << 31
+        mov cr0, eax
 
         
-
-
-    mov eax, cr4
-    or eax, 1 << 5
-    mov cr4, eax
-
-    mov eax, l4
-    mov cr3, eax
-
-    mov ecx, 0xC0000080
-    rdmsr
-    or eax, 1 << 8
-    wrmsr
-
-    mov eax, cr0
-    or eax, 1 << 31
-    mov cr0, eax
-
-    jmp 0x08:long_mode_start
+        jmp 0x08:long_mode_start
