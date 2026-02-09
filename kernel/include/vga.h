@@ -6,6 +6,7 @@
 #define VGA_WIDTH   80
 #define VGA_HEIGHT  25
 #define VGA_MEMORY  0xB8000 
+#define TAB_SIZE    4
 
 enum vga_color{
 	VGA_COLOR_BLACK = 0,

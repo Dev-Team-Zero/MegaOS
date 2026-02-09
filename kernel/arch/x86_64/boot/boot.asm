@@ -12,8 +12,8 @@ section .data
 align 8
 gdt_start:
     dq 0x0000000000000000
-    dq 0x00AF9A000000FFFF    ; 64-bit code segment
-    dq 0x00CF92000000FFFF    ; data segment
+    dq 0x00AF9A000000FFFF    
+    dq 0x00CF92000000FFFF    
 gdt_end:
 
 gdt_descriptor:
@@ -45,23 +45,23 @@ _start:
     ;    mov eax, l3
     ;    or eax, 0b11
     ;    mov [l4], eax
-        cli
+    cli
         
-        mov esp, stack_top
+    mov esp, stack_top
 
-        xor edx, edx
+    xor edx, edx
 
-        mov eax, l3
-        or eax, 0x03       
-        mov [l4], eax
-        mov dword [l4 + 4], edx
+    mov eax, l3
+    or eax, 0x03       
+    mov [l4], eax
+    mov dword [l4 + 4], edx
 
-        mov eax, l2
-        or eax, 0x03
-        mov [l3], eax
-        mov dword [l3 + 4], edx
+    mov eax, l2
+    or eax, 0x03
+    mov [l3], eax
+    mov dword [l3 + 4], edx
 
-        xor ecx, ecx
+    xor ecx, ecx
     .pd_loop:
         mov eax, ecx
         shl eax, 21         

@@ -42,12 +42,28 @@ void terminal_put_entry_at(char c, uint8_t color, size_t row, size_t col){
 }
 
 void terminal_put_char(char c){
-    terminal_put_entry_at(c, terminal_color, terminal_column, terminal_row);
-	if (++terminal_column == VGA_WIDTH) {
-		terminal_column = 0;
-		if (++terminal_row == VGA_HEIGHT)
-			terminal_row = 0;
+    
+	if(c == '\n'){
+		terminal_row++;
+		terminal_column=0;
+	} else if(c == '\t'){
+		if(terminal_column+(TAB_SIZE+1) >= VGA_WIDTH){
+			size_t buff = terminal_column;
+			terminal_row++;
+			terminal_column=(buff+(TAB_SIZE+1))-VGA_WIDTH;
+		} else {
+			terminal_column+=TAB_SIZE;
+		}
+	}else {
+		terminal_put_entry_at(c, terminal_color, terminal_column, terminal_row);
+		if (terminal_column++ == VGA_WIDTH) {
+			terminal_column = 0;
+			if (terminal_row++ == VGA_HEIGHT){
+				terminal_row = 0;
+			}
+		}
 	}
+	
 }
 
 void terminal_write(const char* data, size_t size){

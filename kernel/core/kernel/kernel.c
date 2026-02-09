@@ -2,8 +2,5 @@
 
 void kernel_main(){
     terminal_initialize();
-    terminal_write_string("Works\n");
-    while (1){
-        asm volatile("hlt");
-    }
+    terminal_write_string("W\torks\n");
 }
