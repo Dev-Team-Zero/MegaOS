@@ -19,11 +19,16 @@ cd MegaOS
 docker build buildenv -t myos-buildenv
 ```
 
-4. Run the following command based on your operating system:
+4. Navigate to the source code folder
+```bash
+cd kernel
+```
+
+5. Run the following command based on your operating system:
 
 - **Linux/Mac**:
 ```bash
-docker run --rm -it -v "$(pwd)/root/env:/env" myos-buildenv
+docker run --rm -it -v "$(PWD)/root/env:/env" myos-buildenv
 ```
 
 - **Windows (PowerShell)**:
@@ -35,7 +40,7 @@ Note: Use `${PWD}` for PowerShell on Windows and `$(pwd)` for Linux/Mac.
 
 After completing step 4, you can build the project with the following command:
 
-5. Compile  
+6. Compile  
 ```bash
 make build-x86_64
 ```
@@ -49,6 +54,7 @@ After compilation, you can run the `kernel.iso` found in `dist\x86_64` in
 
 1. Open VirtualBox and create a new virtual machine.
 2. Select "Other" as the operating system type.
+    Note: that the system must be 64 bits to work
 3. Attach the `kernel.iso` file as the bootable disk.
 4. Start the virtual machine.
 
@@ -58,10 +64,6 @@ After compilation, you can run the `kernel.iso` found in `dist\x86_64` in
 ```bash
 make run
 ```
-
-## Features
-
-
 
 ## Contributing
 
