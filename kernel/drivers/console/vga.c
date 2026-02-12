@@ -26,7 +26,7 @@ void terminal_initialize(void){
 	
 	for (size_t row = 0; row < VGA_HEIGHT; row++) {
 		for (size_t col = 0; col < VGA_WIDTH; col++) {
-			const size_t index = row * VGA_WIDTH + col;
+			const size_t index = col * VGA_WIDTH + row;
 			terminal_buffer[index] = vga_entry(' ', terminal_color);
 		}
 	}
@@ -37,7 +37,7 @@ void terminal_set_color(uint8_t color){
 }
 
 void terminal_put_entry_at(char c, uint8_t color, size_t row, size_t col){
-    const size_t index = row * VGA_WIDTH + col;
+    const size_t index = col * VGA_WIDTH + row;
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
