@@ -2,5 +2,5 @@
 
 void kernel_main(){
     terminal_initialize();
-    terminal_write_string("W\torks\n");
+    terminal_write_string("Workss\b");
 }

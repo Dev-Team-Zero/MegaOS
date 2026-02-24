@@ -19,17 +19,24 @@ size_t strlen(const char* str){
 	return len;
 }
 
+void terminal_clear_row(size_t row){
+	for(size_t col; col < VGA_WIDTH;col++){
+		terminal_buffer[col * VGA_WIDTH + row] = vga_entry(' ', terminal_color);;
+	}
+}
+
+void terminal_clear(){
+	for(size_t row = 0;row < VGA_HEIGHT;row++){
+		terminal_clear_row(row);
+	}
+}
+
 void terminal_initialize(void){
     terminal_row = 0;
 	terminal_column = 0;
 	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
 	
-	for (size_t row = 0; row < VGA_HEIGHT; row++) {
-		for (size_t col = 0; col < VGA_WIDTH; col++) {
-			const size_t index = col * VGA_WIDTH + row;
-			terminal_buffer[index] = vga_entry(' ', terminal_color);
-		}
-	}
+	terminal_clear();
 }
 
 void terminal_set_color(uint8_t color){
@@ -54,7 +61,12 @@ void terminal_put_char(char c){
 		} else {
 			terminal_column+=TAB_SIZE;
 		}
-	}else {
+	} else if(c == '\b'){
+		if(terminal_column > 0){
+			terminal_column--;
+			terminal_put_entry_at(' ', terminal_color, terminal_column-1, terminal_row);
+		}
+	} else {
 		terminal_put_entry_at(c, terminal_color, terminal_column, terminal_row);
 		if (terminal_column++ == VGA_WIDTH) {
 			terminal_column = 0;
@@ -74,4 +86,8 @@ void terminal_write(const char* data, size_t size){
 
 void terminal_write_string(const char* data){
     terminal_write(data, strlen(data));
+}
+
+void terminal_new_line(){
+	terminal_column = 0;
 }

@@ -36,3 +36,6 @@ void terminal_put_entry_at(char c, uint8_t color, size_t row, size_t col);
 void terminal_put_char(char c);
 void terminal_write(const char* data, size_t size);
 void terminal_write_string(const char* data);
+void terminal_new_line();
+void terminal_clear_row(size_t row);
+void terminal_clear();
