@@ -20,7 +20,7 @@ size_t strlen(const char* str){
 }
 
 void terminal_clear_row(size_t row){
-	for(size_t col; col < VGA_WIDTH;col++){
+	for(size_t col = 0; col < VGA_WIDTH;col++){
 		terminal_buffer[col * VGA_WIDTH + row] = vga_entry(' ', terminal_color);;
 	}
 }
@@ -64,7 +64,7 @@ void terminal_put_char(char c){
 	} else if(c == '\b'){
 		if(terminal_column > 0){
 			terminal_column--;
-			terminal_put_entry_at(' ', terminal_color, terminal_column-1, terminal_row);
+			terminal_put_entry_at(' ', terminal_color, terminal_column, terminal_row);
 		}
 	} else {
 		terminal_put_entry_at(c, terminal_color, terminal_column, terminal_row);
