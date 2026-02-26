@@ -39,3 +39,4 @@ void terminal_write_string(const char* data);
 void terminal_new_line();
 void terminal_clear_row(size_t row);
 void terminal_clear();
+void terminal_write_hex(uint64_t value);

@@ -34,7 +34,7 @@ void terminal_clear(){
 void terminal_initialize(void){
     terminal_row = 0;
 	terminal_column = 0;
-	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
+	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
 	
 	terminal_clear();
 }
@@ -90,4 +90,14 @@ void terminal_write_string(const char* data){
 
 void terminal_new_line(){
 	terminal_column = 0;
+}
+
+void terminal_write_hex(uint64_t value){
+	char hex_digits[] = "0123456789ABCDEF";
+
+	terminal_write_string("0x");
+	for(int i = 60;i >=0;i-=4){
+		uint8_t digit = (value >> i) & 0xF;
+		terminal_put_char(hex_digits[digit]);
+	}
 }
