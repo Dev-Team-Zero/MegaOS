@@ -3,5 +3,4 @@
 void kernel_main(){
     terminal_initialize();
     terminal_write_string("Workss\b\n");
-    terminal_write_hex(val);
 }
