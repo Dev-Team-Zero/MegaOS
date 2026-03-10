@@ -22,4 +22,9 @@
 
 #define CASCADE_IRQ         2
 
+void io_wait(void);
+void PIC_remap(int offset1, int offset2);
 void PIC_send_EOI(uint8_t irq);
+void IRQ_set_mask(uint8_t IRQline);
+void IRQ_clear_mask(uint8_t IRQline);
+void interupt_setup();
