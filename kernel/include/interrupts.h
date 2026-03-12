@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include "io.h"
 
+#define IDT_ENTRIES 256
+
 #define MASTER_PIC_COMMAND  0x20
 #define MASTER_PIC_DATA     0x21
 #define SLAVE_PIC_COMMAND   0xA0
@@ -23,6 +25,7 @@
 #define CASCADE_IRQ         2
 
 void io_wait(void);
+void pit_init();
 void PIC_remap(uint8_t offset1, uint8_t offset2);
 void PIC_send_EOI(uint8_t irq);
 void IRQ_set_mask(uint8_t IRQline);
