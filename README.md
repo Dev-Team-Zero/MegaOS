@@ -2,6 +2,9 @@
 
 MegaOS is an operating system designed from scratch.
 
+## Note:
+The **[V0.7.0-BETA](https://github.com/eu888/MegaOS/tree/v0.7.0-beta)** branch is the active development branch and will replace 'main' branch in the future after completion of its objectives, so any improvements, suggestions or bug reports you would like to add should be baised on that branch. 
+
 ## Installation
 
 1. Clone the repository:
