@@ -123,12 +123,12 @@ There are many features, here are arranged by the library they came from:
         - **Parameter:**
             - `port`: The I/O port wich will get the value.
     - **void outw(uint16_t port, uint8_t val);**
-        The out instruction, 16 bytes.
+        The out instruction, 16 bits.
         - **Parameter:**
             - `port`: The I/O port.
             - `val`: The value to be outputed in the I/O port port.
     - **uint8_t inb(uint16_t port);**
-        The in instruction 16 bytes.
+        The in instruction 16 bits.
         - **Parameter:**
             - `port`: The I/O port wich will get the value.
 
