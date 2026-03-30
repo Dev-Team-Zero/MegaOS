@@ -11,6 +11,6 @@ RUN apt-get install -y virt-manager
 RUN apt-get install -y bridge-utils
 RUN apt-get install -y libgtk-3-dev
 RUN apt-get install -y qemu-system-gui
+RUN rm -rf /var/lib/apt/lists/*
 
-VOLUME /root/env
-WORKDIR /root/env
+WORKDIR /env

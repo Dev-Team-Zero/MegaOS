@@ -24,23 +24,14 @@ docker build buildenv -t myos-buildenv
 cd kernel
 ```
 
-5. Run the following command based on your operating system:
-
-- **Linux/Mac**:
+5. Run the environment build command:
 ```bash
-docker run --rm -it -v "$(PWD)/root/env:/env" myos-buildenv
+docker run --rm -it -v "$(pwd):/env" myos-buildenv
 ```
 
-- **Windows (PowerShell)**:
-```powershell
-docker run --rm -it -v "${PWD}/root/env:/env" myos-buildenv
-```
+This will open an interactive shell in the container with the kernel source mounted at `/env`.
 
-Note: Use `${PWD}` for PowerShell on Windows and `$(pwd)` for Linux/Mac.
-
-After completing step 4, you can build the project with the following command:
-
-6. Compile  
+6. Inside the container, build the project:
 ```bash
 make build-x86_64
 ```

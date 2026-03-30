@@ -30,4 +30,4 @@ void PIC_remap(uint8_t offset1, uint8_t offset2);
 void PIC_send_EOI(uint8_t irq);
 void IRQ_set_mask(uint8_t IRQline);
 void IRQ_clear_mask(uint8_t IRQline);
-void interupt_setup();
+void interrupt_setup();

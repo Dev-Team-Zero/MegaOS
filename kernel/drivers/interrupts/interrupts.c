@@ -76,7 +76,7 @@ void IRQ_clear_mask(uint8_t IRQline){
     outb(port, value);        
 }
 
-void interupt_setup(){
+void interrupt_setup(){
     set_idt_gate(0x20, (uint64_t)irq_stub);
     init_idt();
     PIC_remap(0x20, 0x28);

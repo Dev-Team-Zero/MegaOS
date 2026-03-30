@@ -16,7 +16,7 @@ section .text
         ret
     outw:
         mov dx, di
-        mov ax, sil 
+        mov ax, si
         out dx, ax
         ret
     inw:

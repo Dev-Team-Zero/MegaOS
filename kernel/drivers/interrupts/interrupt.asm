@@ -19,7 +19,6 @@ section .text
 
         call time_interrupt_handler
 
-        add rsp, 8
         pop r11
         pop r10
         pop r9
