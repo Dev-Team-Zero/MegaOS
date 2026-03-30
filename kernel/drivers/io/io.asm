@@ -1,5 +1,7 @@
 global outb
 global inb
+global outw
+global inw
 
 section .text
     outb:
@@ -11,4 +13,13 @@ section .text
         mov dx, di
         in al, dx
         movzx eax, al
+        ret
+    outw:
+        mov dx, di
+        mov ax, sil 
+        out dx, ax
+        ret
+    inw:
+        mov dx, di
+        in ax, dx
         ret
