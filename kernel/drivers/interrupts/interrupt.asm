@@ -17,7 +17,12 @@ section .text
         push r10
         push r11
 
+        mov rbx, rsp
+        and rsp, -16
+
         call time_interrupt_handler
+
+        mov rsp, rbx
 
         pop r11
         pop r10

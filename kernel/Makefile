@@ -42,4 +42,4 @@ build-x86_64: $(kernel_object_files) $(x86_64_object_files)
 
 .PHONY: run
 run: 
-	qemu-system-x86_64 -nographic -serial mon:stdio -boot d -cdrom dist/x86_64/kernel.iso -m 512
+	qemu-system-x86_64 -nographic -serial mon:stdio -boot d -cdrom dist/x86_64/kernel.iso -m 512 -d int -D qemu.log -no-reboot

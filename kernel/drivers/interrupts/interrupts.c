@@ -43,7 +43,7 @@ void PIC_remap(uint8_t offset1, uint8_t offset2){
     io_wait();
 
 
-    outb(MASTER_PIC_DATA, 0xFE);
+    outb(MASTER_PIC_DATA, 0xFF);
     outb(SLAVE_PIC_DATA, 0xFF);
     terminal_write_string("PIC remap compleat.\n");
 }
@@ -77,13 +77,13 @@ void IRQ_clear_mask(uint8_t IRQline){
 }
 
 void interrupt_setup(){
+    PIC_remap(0x20, 0x28);
     set_idt_gate(0x20, (uint64_t)irq_stub);
     init_idt();
-    PIC_remap(0x20, 0x28);
     interrupt_handlers[0x20] = time_interrupt_handler;
     pit_init();
-    IRQ_clear_mask(0);
     __asm__ volatile("sti");
+    IRQ_clear_mask(0);
 }
 
 void pit_init(){
