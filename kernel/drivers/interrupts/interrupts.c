@@ -42,9 +42,6 @@ void PIC_remap(uint8_t offset1, uint8_t offset2){
     outb(SLAVE_PIC_DATA, ICW4_8060);
     io_wait();
 
-
-    outb(MASTER_PIC_DATA, 0xFF);
-    outb(SLAVE_PIC_DATA, 0xFF);
     terminal_write_string("PIC remap compleat.\n");
 }
 
@@ -81,9 +78,12 @@ void interrupt_setup(){
     set_idt_gate(0x20, (uint64_t)irq_stub);
     init_idt();
     interrupt_handlers[0x20] = time_interrupt_handler;
-    pit_init();
-    __asm__ volatile("sti");
+    terminal_write_string("Enabling interrupts.\n");
     IRQ_clear_mask(0);
+    terminal_write_string("Interrupts enabled.\n");
+    pit_init();
+    terminal_write_string("PIT initialized.\n");
+    // __asm__ volatile("sti"); TODO: to find out why is this broken
 }
 
 void pit_init(){

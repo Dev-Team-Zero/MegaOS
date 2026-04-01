@@ -2,7 +2,7 @@
 
 size_t terminal_row, terminal_column;
 uint8_t terminal_color;
-uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
+volatile uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
 static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg){
     return fg | bg << 4;
