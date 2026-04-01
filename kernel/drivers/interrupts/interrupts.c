@@ -83,7 +83,7 @@ void interrupt_setup(){
     terminal_write_string("Interrupts enabled.\n");
     pit_init();
     terminal_write_string("PIT initialized.\n");
-    // __asm__ volatile("sti"); TODO: to find out why is this broken
+    __asm__ volatile("int $0x20"); //TODO: to find out why is this broken
 }
 
 void pit_init(){
