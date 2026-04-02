@@ -3,8 +3,10 @@
 #include "vga.h"
 
 extern void time_interrupt_handler();
+extern void keyboard_interrupt_handler();
 extern void (*interrupt_handlers[IDT_ENTRIES])();
 extern void irq_stub(void);
+extern void keyboard_stub(void);
 
 void PIC_send_EOI(uint8_t irq){
     if(irq >= 8) outb(SLAVE_PIC_COMMAND, PIC_EOI);
@@ -91,12 +93,17 @@ void interrupt_setup(){
         interrupt_handlers[0x20 + i] = time_interrupt_handler;
     }
 
+    set_idt_gate(0x20, (uint64_t)irq_stub);
+    set_idt_gate(0x21, (uint64_t)keyboard_stub);
+    interrupt_handlers[0x21] = keyboard_interrupt_handler;
+
     init_idt();
     pit_init();
     terminal_write_string("PIT initialized.\n");
 
     terminal_write_string("Enabling interrupts.\n");
     IRQ_clear_mask(0); 
+    IRQ_clear_mask(1);
     terminal_write_string("Interrupts enabled.\n");
 
     __asm__ volatile("sti");

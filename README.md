@@ -2,7 +2,7 @@
 
 MegaOS is an operating system designed from scratch.
 
-## Installation
+## Installation and build
 
 1. Clone the repository:
 
@@ -16,7 +16,7 @@ MegaOS is an operating system designed from scratch.
     cd MegaOS
     ```
 
-3. Install dependencies:
+3. Create docker container and install dependencies:
 
     ```bash
     docker build buildenv -t myos-buildenv
@@ -30,14 +30,15 @@ MegaOS is an operating system designed from scratch.
 
 5. Run the environment build command:
 
-    ## For Linux
+    - For Linux
 
     ```bash
     docker run --rm -it -v "$(pwd):/env" myos-buildenv
-    ```
+    ```  
+
     This will open an interactive shell in the container with the kernel source mounted at `/env`.
 
-    ## For Windows
+    - For Windows
 
     ```bash
     docker run --rm -it -v "$(pwd):/MegaOS" -w /MegaOS myos-buildenv
@@ -50,8 +51,6 @@ MegaOS is an operating system designed from scratch.
     ```bash
     make build-x86_64
     ```
-
-There is already a build with the version you downloaded.
 
 ## Usage
 
@@ -67,7 +66,7 @@ After compilation, you can run the `kernel.iso` found in `dist\x86_64` in:
 
 ### QEMU
 
-1. Open a terminal and run this command:
+1. Run this command while in the environment:
 
     ```bash
     make run

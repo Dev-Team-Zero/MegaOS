@@ -1,5 +1,7 @@
 global irq_stub
+global keyboard_stub
 extern time_interrupt_handler
+extern keyboard_interrupt_handler
 
 section .text
     irq_stub:
@@ -45,3 +47,48 @@ section .text
         pop rbp
 
         iretq 
+
+    keyboard_stub:
+        push rbp
+        mov rbp, rsp
+
+        push rax
+        push rcx
+        push rdx
+        push rbx
+        push rsi
+        push rdi
+        push r8
+        push r9
+        push r10
+        push r11
+        push r12
+        push r13
+        push r14
+        push r15
+
+        mov rbx, rsp
+        and rsp, -16
+
+        call keyboard_interrupt_handler
+
+        mov rsp, rbx
+
+        pop r15
+        pop r14
+        pop r13
+        pop r12
+        pop r11
+        pop r10
+        pop r9
+        pop r8
+        pop rdi
+        pop rsi
+        pop rbx
+        pop rdx
+        pop rcx
+        pop rax
+        pop rbp
+
+        iretq 
+        
