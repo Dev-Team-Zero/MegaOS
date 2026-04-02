@@ -42,9 +42,9 @@ void PIC_remap(uint8_t offset1, uint8_t offset2){
     outb(SLAVE_PIC_DATA, ICW4_8060);
     io_wait();
 
-    outb(MASTER_PIC_DATA, 0x0);
-    io_wait();
-    outb(SLAVE_PIC_DATA, 0x0);
+    
+    outb(MASTER_PIC_DATA, 0xFF);
+    outb(SLAVE_PIC_DATA, 0xFF);
     io_wait();
 
     terminal_write_string("PIC remap complete.\n");
@@ -79,15 +79,27 @@ void IRQ_clear_mask(uint8_t IRQline){
 }
 
 void interrupt_setup(){
-    PIC_remap(0x20, 0x28);
-    set_idt_gate(0x20, (uint64_t)irq_stub);
+    PIC_remap(0x20, 0x2F);
+
+
+    for (uint8_t i = 0; i < 32; ++i) {
+        set_idt_gate(i, (uint64_t)irq_stub);
+        interrupt_handlers[i] = time_interrupt_handler;
+    }
+    for (uint8_t i = 0; i < 16; ++i) {
+        set_idt_gate(0x20 + i, (uint64_t)irq_stub);
+        interrupt_handlers[0x20 + i] = time_interrupt_handler;
+    }
+
     init_idt();
-    interrupt_handlers[0x20] = time_interrupt_handler;
-    terminal_write_string("Enabling interrupts.\n");
-    IRQ_clear_mask(0);
-    terminal_write_string("Interrupts enabled.\n");
     pit_init();
     terminal_write_string("PIT initialized.\n");
+
+    terminal_write_string("Enabling interrupts.\n");
+    IRQ_clear_mask(0); 
+    terminal_write_string("Interrupts enabled.\n");
+
+    __asm__ volatile("sti");
 }
 
 void pit_init(){
