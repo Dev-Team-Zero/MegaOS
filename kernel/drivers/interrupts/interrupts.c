@@ -22,12 +22,12 @@ void PIC_remap(uint8_t offset1, uint8_t offset2){
     terminal_write_string("Slave PIC Init.\n");
     outb(SLAVE_PIC_COMMAND, ICW1_INIT | ICW1_ICW4);
     io_wait();
-    terminal_write_string("Interupt vector offset.\n");
+    terminal_write_string("Interrupt vector offset.\n");
     outb(MASTER_PIC_DATA, offset1);
     io_wait();
     outb(SLAVE_PIC_DATA, offset2);
     io_wait();
-    terminal_write_string("Unmasking Slave PIC on IRQ: \n");
+    terminal_write_string("Configuring PIC cascade on IRQ: \n");
     char str[2];
     str[0] = '0' + CASCADE_IRQ;
     str[1] = 0;
@@ -42,7 +42,12 @@ void PIC_remap(uint8_t offset1, uint8_t offset2){
     outb(SLAVE_PIC_DATA, ICW4_8060);
     io_wait();
 
-    terminal_write_string("PIC remap compleat.\n");
+    outb(MASTER_PIC_DATA, 0x0);
+    io_wait();
+    outb(SLAVE_PIC_DATA, 0x0);
+    io_wait();
+
+    terminal_write_string("PIC remap complete.\n");
 }
 
 void IRQ_set_mask(uint8_t IRQline){
@@ -83,7 +88,6 @@ void interrupt_setup(){
     terminal_write_string("Interrupts enabled.\n");
     pit_init();
     terminal_write_string("PIT initialized.\n");
-    __asm__ volatile("int $0x20"); //TODO: to find out why is this broken
 }
 
 void pit_init(){

@@ -30,11 +30,20 @@ MegaOS is an operating system designed from scratch.
 
 5. Run the environment build command:
 
+    ## For Linux
+
     ```bash
     docker run --rm -it -v "$(pwd):/env" myos-buildenv
     ```
-
     This will open an interactive shell in the container with the kernel source mounted at `/env`.
+
+    ## For Windows
+
+    ```bash
+    docker run --rm -it -v "$(pwd):/MegaOS" -w /MegaOS myos-buildenv
+    ```
+
+    This will open an interactive shell in the container with the kernel source mounted at `/MegaOS`.
 
 6. Inside the container, build the project:
 
