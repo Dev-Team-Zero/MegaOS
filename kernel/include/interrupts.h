@@ -31,3 +31,16 @@ void PIC_send_EOI(uint8_t irq);
 void IRQ_set_mask(uint8_t IRQline);
 void IRQ_clear_mask(uint8_t IRQline);
 void interrupt_setup();
+
+static const char keyboard_keymap[128] = {
+    0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', //0x00-0x0E
+    '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',  //0x0F-0x1C
+    '0', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 41, //0x1D-0x29
+    0, '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, //0x2A-0x35
+    '*', 0, ' ', 0, 0, 0, 0, 0, 0, 0, //0x36-0x3F
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, //0x40-0x49
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, //0x4A-0x53
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, //0x54-0x5B 
+};
+
+char scancode_to_ascii(uint8_t scancode);

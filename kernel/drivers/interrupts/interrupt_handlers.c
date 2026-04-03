@@ -13,13 +13,29 @@ void time_interrupt_handler(){
 
 void keyboard_interrupt_handler(){
     uint8_t status = inb(0x64);
-    if(status & 0x01){
-        uint8_t scancode = inb(0x60);
-        if(scancode < 0x0) return;
-        terminal_write_string("Key pressed: ");
-        terminal_write_hex(scancode);
-        terminal_write_string("\n");
+    if(!(status & 0x01)){
+        PIC_send_EOI(1);
+        return;
     }
+
+    uint8_t scancode = inb(0x60);
+    if (scancode >= 0x80){
+        PIC_send_EOI(1);
+        return;
+    }
+
+    char key = scancode_to_ascii(scancode);
+    if (!key){
+        PIC_send_EOI(1);
+        return;
+    }
+
+    terminal_put_char(key);
 
     PIC_send_EOI(1);
 }
+
+char scancode_to_ascii(uint8_t scancode) {
+    if (scancode > 0x7F) return 0;
+    return keyboard_keymap[scancode];
+} 
