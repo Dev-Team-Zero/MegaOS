@@ -17,3 +17,4 @@ typedef struct block_header {
 } block_header_t;
 
 void init_heap();
+void* kmalloc(size_t size);
