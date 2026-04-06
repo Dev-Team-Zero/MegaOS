@@ -34,7 +34,7 @@ The **[V0.7.0-BETA](https://github.com/eu888/MegaOS/tree/v0.7.0-beta)** branch i
 
 5. Run the environment build command:
 
-    - For Linux
+    - For Linux / Mac
 
         ```bash
         docker run --rm -it -v "$(pwd):/env" myos-buildenv
