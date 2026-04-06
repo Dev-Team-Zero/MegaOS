@@ -55,7 +55,7 @@ void kfree(void* ptr){
         current = current->next;
     }
     if(current && current->free){
-            current->size += sizeof(block_header_t) + header->size;
-            current->next = header->next;
-        }
+        current->size += sizeof(block_header_t) + header->size;
+        current->next = header->next;
+    }
 }
