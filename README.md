@@ -2,52 +2,79 @@
 
 MegaOS is an operating system designed from scratch.
 
-## Note:
-The **[V0.7.0-BETA](https://github.com/eu888/MegaOS/tree/v0.7.0-beta)** branch is the active development branch and will replace `main` branch in the future after completion of its objectives, so any improvements, suggestions or bug reports you would like to add should be baised on that branch. 
+## Note
 
-## Installation
+The **[V0.7.0-BETA](https://github.com/eu888/MegaOS/tree/v0.7.0-beta)** branch is the active development branch    and will replace `main` branch in the future after completion of its objectives, so any improvements, suggestions or bug reports you would like to add should be baised on that branch.  
+
+## Installation and build
 
 1. Clone the repository:
-```bash
-git clone https://github.com/eu888/MegaOS.git
-```
+
+    ```bash
+    git clone https://github.com/eu888/MegaOS.git
+    ```
 
 2. Navigate to the project directory:
-```bash
-cd MegaOS
-```
 
-3. Install dependencies:
-```bash
-docker build buildenv -t myos-buildenv
-```
+    ```bash
+    cd MegaOS
+    ```
 
-4. Run the following command based on your operating system:
+3. Create docker container and install dependencies:
 
-- **Linux/Mac**:
-```bash
-docker run --rm -it -v "${PWD}:/MegaOS" -w /MegaOS myos-buildenv
-```
+    ```bash
+    docker build buildenv -t myos-buildenv
+    ```
 
-- **Windows (PowerShell)**:
-```powershell
-docker run --rm -it -v "$(pwd):/MegaOS" -w /MegaOS myos-buildenv
-```
+4. Navigate to the source code folder
 
-After completing step 4, you can build the project with the following command:
+    ```bash
+    cd kernel
+    ```
 
-5. Compile  
-```bash
-make build-x86_64
-```
+5. Run the environment build command:
 
-## Running it
+    - For Linux
 
-After compilation, you can run the `kernel.iso` found in `dist\x86_64` in VirtualBox:
+        ```bash
+        docker run --rm -it -v "$(pwd):/env" myos-buildenv
+        ```
+
+    This will open an interactive shell in the container with the kernel source mounted at `/env`.
+
+    - For Windows
+
+        ```bash
+        docker run --rm -it -v "$(pwd):/MegaOS" -w /MegaOS myos-buildenv
+        ```
+
+    This will open an interactive shell in the container with the kernel source mounted at `/MegaOS`.
+
+6. Inside the container, build the project:
+
+    ```bash
+    make build-x86_64
+    ```
+
+## Usage
+
+After compilation, you can run the `kernel.iso` found in `dist\x86_64` in:
+
+### VirtualBox
+
 1. Open VirtualBox and create a new virtual machine.
 2. Select "Other" as the operating system type.
+    Note: that the system must be 64 bits to work
 3. Attach the `kernel.iso` file as the bootable disk.
 4. Start the virtual machine.
+
+### QEMU
+
+1. Run this command while in the environment:
+
+    ```bash
+    make run
+    ```
 
 ## Features
 
@@ -78,7 +105,7 @@ There are many features, here are arranged by the library they came from:
         Pauses execution for a specified duration.
         - **Parameter:**
             - `count`: Duration to sleep.
-    
+
 2. `memory.h`:
     - **void init_memory_manager(size_t mem_size);**  
         Initializes the memory manager with the given memory size.
@@ -132,7 +159,7 @@ There are many features, here are arranged by the library they came from:
         - **Parameter:**
             - `port`: The I/O port wich will get the value.
 
-#### More to be added in the future updates
+### More to be added in the future updates
 
 ## Contributing
 
