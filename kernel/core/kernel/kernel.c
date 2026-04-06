@@ -8,6 +8,7 @@ void kernel_main(){
     terminal_write_hex(67);
     interrupt_setup();
     init_heap();
-    kmalloc(4096);
+    void* a = kmalloc(4096);
+    kfree(a);
     terminal_write_string("um\n");
 }

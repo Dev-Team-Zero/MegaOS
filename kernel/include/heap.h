@@ -18,3 +18,4 @@ typedef struct block_header {
 
 void init_heap();
 void* kmalloc(size_t size);
+void kfree(void* ptr);

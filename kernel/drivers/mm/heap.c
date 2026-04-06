@@ -35,3 +35,27 @@ void* kmalloc(size_t size) {
     } 
     return NULL;
 }
+
+void kfree(void* ptr){
+    if(!ptr) return;
+    block_header_t* header = (block_header_t*)(uintptr_t)ptr - sizeof(block_header_t);
+    if(header->free){
+        terminal_write_string("Warning: Double free in kfree!\n");
+        return;
+    }
+    header->free = 1;
+
+    while(header->next && header->next->free){
+        header->size += sizeof(block_header_t) + header->next->size;
+        header->next = header->next->next;
+    }
+
+    block_header_t* current = heap_head;
+    while(current && (current->next != header)){
+        current = current->next;
+    }
+    if(current && current->free){
+            current->size += sizeof(block_header_t) + header->size;
+            current->next = header->next;
+        }
+}
