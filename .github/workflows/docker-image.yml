@@ -25,3 +25,4 @@ jobs:
       with:
         name: MegaOS-Build
         path: dist/x86_64/kernel.iso
+        retention-days: 7
