@@ -87,7 +87,7 @@ jobs:
     - name: Run manual build steps
       if: matrix.build-mode == 'manual'
       shell: bash
-      run: docker run --rm -v ${{ github.workspace }}:/root/env megaos-env make build-x86_64
+      run: docker build . --file buildenv/Dockerfile --tag MegaOS-env && docker run --rm -v ${{ github.workspace }}:/root/env megaos-env make build-x86_64
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
