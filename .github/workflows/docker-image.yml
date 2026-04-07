@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag megaos-env
+      run: docker build . --file buildenv/Dockerfile --tag megaos-env
 
     - name: Compile kernel
       run: docker run --rm -v ${{ github.workspace }}:/env megaos-env make build-x86_64
