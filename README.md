@@ -1,5 +1,7 @@
 # MegaOS Overview
 
+[![Docker Image CI](https://github.com/Dev-Team-Zero/MegaOS/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Dev-Team-Zero/MegaOS/actions/workflows/docker-image.yml)
+
 MegaOS is an operating system designed from scratch.
 
 ## Note
