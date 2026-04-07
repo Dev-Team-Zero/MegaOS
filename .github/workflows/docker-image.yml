@@ -15,10 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file buildenv/Dockerfile --tag megaos-env
+      run: docker build . --file buildenv/Dockerfile --tag megaos-env 
 
-    - name: Compile kernel
-      run: cd kernel && docker run --rm -v ${{ github.workspace }}:/env megaos-env make build-x86_64
+    - name: Run container
+      run: docker run --rm -v ${{ github.workspace }}:/env megaos-env 
+
+    - name: Compile the code
+      run: cd kernel && make build-x86_64
 
     - name: Uploade build ISO file
       uses: actions/upload-artifact@v4
