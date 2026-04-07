@@ -18,7 +18,7 @@ jobs:
       run: docker build . --file buildenv/Dockerfile --tag megaos-env 
 
     - name: Run container
-      run: docker run --rm -v ${{ github.workspace }}:/env megaos-env make -C kernel
+      run: docker run --rm -v ${{ github.workspace }}:/env megaos-env make build-x86_64
 
     - name: Uploade build ISO file
       uses: actions/upload-artifact@v4
