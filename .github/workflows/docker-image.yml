@@ -16,11 +16,8 @@ jobs:
         - name: Build the Docker Image
           run: docker build . --file buildenv/Dockerfile --tag buildenv
 
-        - name: Run container
-          run: docker run --rm -v ${{ github.workspace }}:/env buildenv
-          
-        - name: Build binaries
-          run: cd kernel && make build-x86_64
+        - name: Run container and build binaries
+          run: docker run --rm -v ${{ github.workspace }}:/env buildenv make -C kernel build-x86_64
 
         - name: Upload build ISO file
           uses: actions/upload-artifact@v4
