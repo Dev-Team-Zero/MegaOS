@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-        - uses: actions/chechout@v4
+        - uses: actions/checkout@v4
 
         - name: Build the Docker Image
           run: docker build . --file buildenv/Dockerfile --tag buildenv
