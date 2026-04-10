@@ -1,0 +1,55 @@
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "v0.7.0-beta" ]
+  pull_request:
+    branches: [ "v0.7.0-beta" ]
+  schedule:
+    - cron: '26 10 * * 2'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    permissions:
+      
+      security-events: write
+
+      packages: read
+
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: actions
+          build-mode: none
+        - language: c-cpp
+          build-mode: none
+          queries: security-extended,precision-high 
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }} 
+        
+    - name: Run manual build steps
+      if: matrix.build-mode == 'manual'
+      shell: bash
+      run: docker build . --file buildenv/Dockerfile --tag megaos-env && docker run --rm -v ${{ github.workspace }}:/root/env megaos-env make build-x86_64
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4
+      with:
+        upload: true
+        cleanup-level: 'aggressive'
+        category: "/language:${{matrix.language}}"
