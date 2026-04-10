@@ -1,0 +1,30 @@
+name: Build Docker Image and compile binaries CI
+
+on:
+    push:
+        branches: [v0.7.0-beta]
+    pull_request:
+        branches: [v0.7.0-beta]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/chechout@v4
+
+        - name: Build the Docker Image
+          run: docker build . --file buildenv/Dockerfile --tag buildenv
+
+        - name: Run container
+          run: docker run --rm -v ${{ github.workspace }}:/env buildenv
+          
+        - name: Build binaries
+          run: cd kernel && make build-x86_64
+
+        - name: Upload build ISO file
+          uses: actions/upload-artifact@v4
+          with:
+            name: MegaOS-Build
+            path: kernel/dist/x86_64/kernel.iso
+            retention-days: 7
