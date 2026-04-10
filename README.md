@@ -2,6 +2,8 @@
 
 [![Build Docker Image and compile binaries CI](https://github.com/eu888/MegaOS/actions/workflows/docker-image.yml/badge.svg)](https://github.com/eu888/MegaOS/actions/workflows/docker-image.yml)
 
+[![CodeQL Advanced](https://github.com/eu888/MegaOS/actions/workflows/codeql.yml/badge.svg)](https://github.com/eu888/MegaOS/actions/workflows/codeql.yml)
+
 MegaOS is an operating system designed from scratch.
 
 ## Installation and build
