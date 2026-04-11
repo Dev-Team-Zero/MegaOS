@@ -1,6 +1,4 @@
 #include "interrupts.h"
-#include "idt.h"
-#include "vga.h"
 
 void (*interrupt_handlers[IDT_ENTRIES])();
 
@@ -31,6 +29,8 @@ void keyboard_interrupt_handler(){
     }
 
     terminal_put_char(key);
+    console_process_key(key);
+
 
     PIC_send_EOI(1);
 }

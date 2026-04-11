@@ -1,6 +1,4 @@
 #include "interrupts.h"
-#include "idt.h"
-#include "vga.h"
 
 extern void time_interrupt_handler();
 extern void keyboard_interrupt_handler();

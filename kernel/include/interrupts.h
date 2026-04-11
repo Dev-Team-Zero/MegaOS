@@ -1,6 +1,11 @@
+#pragma once
+
 #include <stddef.h>
 #include <stdint.h>
 #include "io.h"
+#include "idt.h"
+#include "vga.h"
+#include "console.h"
 
 #define IDT_ENTRIES 256
 

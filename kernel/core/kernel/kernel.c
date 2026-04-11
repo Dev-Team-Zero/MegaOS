@@ -11,4 +11,5 @@ void kernel_main(){
     void* a = kmalloc(4096);
     kfree(a);
     terminal_write_string("um\n");
+    void print_start_symbol();
 }

@@ -2,8 +2,8 @@
 
 volatile uint16_t* video_memory = (uint16_t*)VGA_MEMORY;
 
-uint8_t cursor_x = 0;
-uint8_t cursor_y = 0;
+size_t cursor_x = 0;
+size_t cursor_y = 0;
 extern uint8_t terminal_color;
 char console_command_buffer[MAX_CONSOLE_LEN];
 uint8_t command_length = 0;
@@ -17,12 +17,12 @@ void update_cursor(){
 }
 
 void vga_scroll(){
-    for(uint8_t y = 1;y < VGA_HEIGHT;y++){
+    for(size_t y = 1;y < VGA_HEIGHT;y++){
         for(uint8_t x = 0;x < VGA_WIDTH;x++){
             video_memory[(y - 1) * VGA_WIDTH + x] = video_memory[y * VGA_WIDTH + x];
         }
     }
-    for(uint8_t x = 0;x < VGA_WIDTH;x++){
+    for(size_t x = 0;x < VGA_WIDTH;x++){
         video_memory[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = (terminal_color << 8) | ' ';
     }
     if(cursor_y > 0) cursor_y--;
@@ -37,11 +37,11 @@ void console_clear(){
 }
 
 void console_process_key(char key){
-    if(key == '\n'){
+    if(key == '\n' || key == '\r'){
         console_command_buffer[command_length] = '\0';
         console_command_handler(console_command_buffer);
         command_length = 0;
-        terminal_write_string("> ");
+        print_start_symbol();
     } else if (key == '\b'){
         if (command_length > 0) {
             command_length--;
@@ -52,12 +52,25 @@ void console_process_key(char key){
     }
 }
 
+/**
+ * @brief The actual handler for commands. Contains the code to execute all the console/terminal commands.
+ * @param command The line which the command and it`s params are.
+ */
 void console_command_handler(const char* command){
     if(strcmp(command, "test") == 0){
         terminal_write_string("ok\n");
+    } else if(strcmp(command, "clear") == 0){
+        console_clear();
     } else {
         terminal_write_string("Command ");
         terminal_write_string(command);
         terminal_write_string(" was not found.\n");
     }
+}
+
+/**
+ * @brief Prints conslole/terminal start symbol.
+ */
+void print_start_symbol(){
+    terminal_write_string("> ");
 }

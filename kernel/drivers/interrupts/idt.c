@@ -1,5 +1,4 @@
 #include "interrupts.h"
-#include "idt.h"
 
 
 extern void (*interrupt_handlers[IDT_ENTRIES])();
