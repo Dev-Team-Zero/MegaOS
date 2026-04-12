@@ -6,6 +6,7 @@ size_t cursor_x = 0;
 size_t cursor_y = 0;
 extern uint8_t terminal_color;
 char console_command_buffer[MAX_CONSOLE_LEN];
+char buffer[2];
 uint8_t command_length = 0;
 
 void update_cursor(){
@@ -28,6 +29,9 @@ void vga_scroll(){
     if(cursor_y > 0) cursor_y--;
 }
 
+/**
+ * @brief Clears the console/terminal screen and resets cursor.
+ */
 void console_clear(){
     terminal_clear();
     cursor_x = 0;
@@ -46,7 +50,7 @@ void console_process_key(char key){
         if (command_length > 0) {
             command_length--;
         }
-    } else {
+    } else{
         if(command_length >= MAX_CONSOLE_LEN) return;
         console_command_buffer[command_length++] = key;
     }
@@ -61,7 +65,21 @@ void console_command_handler(const char* command){
         terminal_write_string("ok\n");
     } else if(strcmp(command, "clear") == 0){
         console_clear();
-    } else {
+    } else if(strncmp(command, "color", 4) == 0){
+        command+=6;
+        uint8_t bg = 0;
+        uint8_t fg = 0;
+        while(*command != ' '){
+            bg = bg * 10 + (*command - '0');
+            command++;
+        }
+        command++;
+        while(*command != '\n' && *command != '\0'){
+            fg = fg * 10 + (*command - '0');
+            command++;
+        }
+        terminal_color = fg | bg << 4;
+    } else{
         terminal_write_string("Command ");
         terminal_write_string(command);
         terminal_write_string(" was not found.\n");
