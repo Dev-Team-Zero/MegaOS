@@ -66,6 +66,10 @@ void console_command_handler(const char* command){
     } else if(strcmp(command, "clear") == 0){
         console_clear();
     } else if(strncmp(command, "color", 4) == 0){
+        if(command_length <= 5){
+            set_color_info();
+            return;
+        }
         command+=6;
         uint8_t bg = 0;
         uint8_t fg = 0;
@@ -77,6 +81,10 @@ void console_command_handler(const char* command){
         while(*command != '\n' && *command != '\0'){
             fg = fg * 10 + (*command - '0');
             command++;
+        }
+        if((bg > 15) || (fg > 15)){
+            set_color_info();
+            return;
         }
         terminal_color = fg | bg << 4;
     } else{
@@ -91,4 +99,9 @@ void console_command_handler(const char* command){
  */
 void print_start_symbol(){
     terminal_write_string("> ");
+}
+
+void set_color_info(){
+    terminal_write_string("Use: color <background> <foreground>.\n");
+    terminal_write_string("BLACK = 0\t\t DARK_GREY = 8\nBLUE = 1\t\t  LIGHT_BLUE = 9\nGREEN = 2\t\t LIGHT_GREEN = 10\nCYAN = 3\t\t  LIGHT_CYAN = 11\nRED = 4\t\t   LIGHT_RED = 12\nMAGENTA = 5\t   LIGHT_MAGENTA = 13\nBROWN = 6\t\t LIGHT_BROWN = 14,\nLIGHT_GREY = 7\tWHITE = 15\n");
 }
