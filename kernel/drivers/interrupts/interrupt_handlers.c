@@ -22,9 +22,9 @@ void keyboard_interrupt_handler(){
     uint8_t scancode = inb(0x60);
     if((scancode == 0x2A) || (scancode == 0x36)) shift = SHIFT_PRESSED;
     if((scancode == 0xAA) || (scancode == 0xB6)) shift = SHIFT_RELEASED;
-    if(scancode == 0x58){
+    if(scancode == 0x3A){
         if(caps == CAPS_OFF) caps = CAPS_ON;
-        caps = CAPS_OFF;
+        else caps = CAPS_OFF;
     }
     if (scancode >= 0x80){
         PIC_send_EOI(1);
@@ -48,6 +48,6 @@ void keyboard_interrupt_handler(){
 
 char scancode_to_ascii(uint8_t scancode) {
     if (scancode > 0x7F) return 0;
-    if((shift && caps) == SHIFT_RELEASED) return keyboard_keymap[scancode];
+    if((shift ^ caps) == SHIFT_RELEASED) return keyboard_keymap[scancode];
     return keyboard_keymap_shift[scancode];
 } 

@@ -60,13 +60,13 @@ static const char keyboard_keymap_shift[128] = {
 };
 
 enum shift_status {
-    SHIFT_PRESSED,
-    SHIFT_RELEASED
+    SHIFT_RELEASED,
+    SHIFT_PRESSED
 };
 
 enum caps_status{
-    CAPS_ON,
-    CAPS_OFF
+    CAPS_OFF,
+    CAPS_ON
 };
 
 
