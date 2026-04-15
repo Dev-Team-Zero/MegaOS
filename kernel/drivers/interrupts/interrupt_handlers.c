@@ -48,6 +48,6 @@ void keyboard_interrupt_handler(){
 
 char scancode_to_ascii(uint8_t scancode) {
     if (scancode > 0x7F) return 0;
-    if((shift ^ caps) == SHIFT_RELEASED) return keyboard_keymap[scancode];
+    if((shift ^ caps) == 0) return keyboard_keymap[scancode];
     return keyboard_keymap_shift[scancode];
 } 
