@@ -1,5 +1,6 @@
 #include "interrupts.h"
 
+/** @brief An array of pointers to the interrupt handler functions. */
 void (*interrupt_handlers[IDT_ENTRIES])();
 
 volatile uint64_t ticks = 0;
@@ -7,11 +8,17 @@ volatile uint64_t ticks = 0;
 enum shift_status shift = SHIFT_RELEASED;
 enum caps_status caps = CAPS_OFF;
 
+/**
+ * @brief Handles the timer interrupt.
+ */
 void time_interrupt_handler(){
     ticks++;
     PIC_send_EOI(0);
 }
 
+/**
+ * @brief Handles the keyboard interrupt.
+ */
 void keyboard_interrupt_handler(){
     uint8_t status = inb(0x64);
     if(!(status & 0x01)){
@@ -46,6 +53,11 @@ void keyboard_interrupt_handler(){
     PIC_send_EOI(1);
 }
 
+/**
+ * @brief Converts a scancode to an ASCII character, taking into account the shift and caps lock status.
+ * @param scancode The scancode to convert.
+ * @return The corresponding ASCII character, or 0 if the scancode does not correspond to a valid key.
+ */
 char scancode_to_ascii(uint8_t scancode) {
     if (scancode > 0x7F) return 0;
     if((shift ^ caps) == 0) return keyboard_keymap[scancode];

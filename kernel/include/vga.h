@@ -9,6 +9,9 @@
 #define VGA_MEMORY  0xB8000 
 #define TAB_SIZE    4
 
+/**
+ * @brief Enumerates the available VGA colors.
+ */
 enum vga_color{
 	VGA_COLOR_BLACK = 0,
 	VGA_COLOR_BLUE = 1,

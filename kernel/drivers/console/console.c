@@ -9,6 +9,9 @@ char console_command_buffer[MAX_CONSOLE_LEN];
 char buffer[2];
 uint8_t command_length = 0;
 
+/**
+ * @brief Updates the position of the cursor on the screen.
+ */
 void update_cursor(){
     uint16_t pos = cursor_y * VGA_WIDTH + cursor_x;
     outb(0x3D4, 0xF);
@@ -17,6 +20,9 @@ void update_cursor(){
     outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
 }
 
+/**
+ * @brief Scrolls the VGA text buffer.
+ */
 void vga_scroll(){
     for(size_t y = 1;y < VGA_HEIGHT;y++){
         for(uint8_t x = 0;x < VGA_WIDTH;x++){
@@ -40,6 +46,10 @@ void console_clear(){
     update_cursor();
 }
 
+/**
+ * @brief Processes a key press event in the console.
+ * @param key The key that was pressed.
+ */
 void console_process_key(char key){
     if(key == '\n' || key == '\r'){
         console_command_buffer[command_length] = '\0';
@@ -61,8 +71,9 @@ void console_process_key(char key){
  * @param command The line which the command and it`s params are.
  */
 void console_command_handler(const char* command){
-    if(strcmp(command, "test") == 0){
-        terminal_write_string("ok\n");
+    if(strncmp(command, "echo", 3) == 0){
+        terminal_write_string(command+5);
+        terminal_put_char('\n');
     } else if(strcmp(command, "clear") == 0){
         console_clear();
     } else if(strncmp(command, "color", 4) == 0){
@@ -101,6 +112,9 @@ void print_start_symbol(){
     terminal_write_string("> ");
 }
 
+/**
+ * @brief Sets the color information for the terminal.
+ */
 void set_color_info(){
     terminal_write_string("Use: color <background> <foreground>.\n");
     terminal_write_string("BLACK = 0\t\t DARK_GREY = 8\nBLUE = 1\t\t  LIGHT_BLUE = 9\nGREEN = 2\t\t LIGHT_GREEN = 10\nCYAN = 3\t\t  LIGHT_CYAN = 11\nRED = 4\t\t   LIGHT_RED = 12\nMAGENTA = 5\t   LIGHT_MAGENTA = 13\nBROWN = 6\t\t LIGHT_BROWN = 14,\nLIGHT_GREY = 7\tWHITE = 15\n");

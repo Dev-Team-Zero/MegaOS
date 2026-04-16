@@ -6,15 +6,27 @@ extern void (*interrupt_handlers[IDT_ENTRIES])();
 extern void irq_stub(void);
 extern void keyboard_stub(void);
 
+/**
+ * @brief Sends an End-of-Interrupt (EOI) signal to the Programmable Interrupt Controller (PIC).
+ * @param irq The interrupt request line number.
+ */
 void PIC_send_EOI(uint8_t irq){
     if(irq >= 8) outb(SLAVE_PIC_COMMAND, PIC_EOI);
     outb(MASTER_PIC_COMMAND, PIC_EOI);
 }
 
+/**
+ * @brief Waits for an I/O operation to complete by sending a dummy byte to an unused port.
+ */
 void io_wait(void){
     outb(0x80, 0);
 }
 
+/**
+ * @brief Remaps the Programmable Interrupt Controller (PIC) interrupt vectors.
+ * @param offset1 The offset for the master PIC.
+ * @param offset2 The offset for the slave PIC.
+ */
 void PIC_remap(uint8_t offset1, uint8_t offset2){
     terminal_write_string("\nMaster PIC Init.\n");
     outb(MASTER_PIC_COMMAND, ICW1_INIT | ICW1_ICW4);
@@ -50,6 +62,10 @@ void PIC_remap(uint8_t offset1, uint8_t offset2){
     terminal_write_string("PIC remap complete.\n");
 }
 
+/**
+ * @brief Sets the mask for a specific IRQ line.
+ * @param IRQline The IRQ line number.
+ */
 void IRQ_set_mask(uint8_t IRQline){
     uint16_t port;
     uint8_t value;
@@ -64,6 +80,10 @@ void IRQ_set_mask(uint8_t IRQline){
     outb(port, value);        
 }
 
+/**
+ * @brief Clears the mask for a specific IRQ line.
+ * @param IRQline The IRQ line number.
+ */
 void IRQ_clear_mask(uint8_t IRQline){
     uint16_t port;
     uint8_t value;
@@ -78,6 +98,9 @@ void IRQ_clear_mask(uint8_t IRQline){
     outb(port, value);        
 }
 
+/**
+ * @brief Sets up the interrupt handling system.
+ */
 void interrupt_setup(){
     PIC_remap(0x20, 0x2F);
 
@@ -107,6 +130,9 @@ void interrupt_setup(){
     __asm__ volatile("sti");
 }
 
+/**
+ * @brief Initializes the Programmable Interval Timer (PIT) to generate timer interrupts at a specific frequency.
+ */
 void pit_init(){
     uint32_t freq = 100;
     uint16_t divisor = 1193180 / freq;

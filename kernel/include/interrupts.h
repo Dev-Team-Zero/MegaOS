@@ -37,6 +37,9 @@ void IRQ_set_mask(uint8_t IRQline);
 void IRQ_clear_mask(uint8_t IRQline);
 void interrupt_setup();
 
+/**
+ * @brief A lookup table for converting scancodes to ASCII characters without shift pressed.
+ */
 static const char keyboard_keymap[128] = {
     0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', //0x00-0x0E
     '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',  //0x0F-0x1C
@@ -48,6 +51,9 @@ static const char keyboard_keymap[128] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, //0x54-0x5B 
 };
 
+/**
+ * @brief A lookup table for converting scancodes to ASCII characters with shift pressed.
+ */
 static const char keyboard_keymap_shift[128] = {
     0, 27, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b', //0x00-0x0E
     '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n',  //0x0F-0x1C
