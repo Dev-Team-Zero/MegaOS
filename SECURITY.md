@@ -3,8 +3,8 @@
 ## Supported Versions
 
 For now it is in beta:
-| Version | Supported          |
 
+| Version | Supported          |
 | ------- | ------------------ |
 | 0.7.0   | :white_check_mark: |
 | 0.6.1   | :white_check_mark: |
