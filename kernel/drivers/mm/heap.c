@@ -50,7 +50,7 @@ void* kmalloc(size_t size) {
  */
 void kfree(void* ptr){
     if(!ptr) return;
-    block_header_t* header = (block_header_t*)(uintptr_t)ptr - sizeof(block_header_t);
+    block_header_t* header = (block_header_t*)((uintptr_t)ptr - sizeof(block_header_t));
     if(header->free){
         terminal_write_string("Warning: Double free in kfree!\n");
         return;

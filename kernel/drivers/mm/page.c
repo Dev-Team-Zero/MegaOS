@@ -18,7 +18,7 @@ static inline void set_bit(size_t bit) {
  * @param bit The index of the bit to clear.
  */
 static inline void clear_bit(size_t bit) {
-    page_bitmap[bit / 8] &= (1 << (bit % 8));
+    page_bitmap[bit / 8] &= ~(1 << (bit % 8));
 }
 
 /**
