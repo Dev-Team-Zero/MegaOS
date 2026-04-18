@@ -63,3 +63,15 @@ char scancode_to_ascii(uint8_t scancode) {
     if((shift ^ caps) == 0) return keyboard_keymap[scancode];
     return keyboard_keymap_shift[scancode];
 } 
+
+/**
+ * @brief Handles exceptions by printing an error message and halting the system.
+ * @param vector The interrupt vector number.
+ * @param error_code The error code associated with the exception.
+ */
+void exception_handler(uint8_t vector, uint64_t error_code){
+    terminal_write_string("\n[KERNEL PANIC] ");
+    terminal_write_string(exception_names[vector]);
+    terminal_write_string("\nSystem halted.");
+    __asm__ volatile("cli; hlt");
+}

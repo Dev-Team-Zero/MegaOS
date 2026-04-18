@@ -5,6 +5,7 @@ extern void keyboard_interrupt_handler();
 extern void (*interrupt_handlers[IDT_ENTRIES])();
 extern void irq_stub(void);
 extern void keyboard_stub(void);
+extern void exception_stub_0(void);
 
 /**
  * @brief Sends an End-of-Interrupt (EOI) signal to the Programmable Interrupt Controller (PIC).
@@ -102,13 +103,14 @@ void IRQ_clear_mask(uint8_t IRQline){
  * @brief Sets up the interrupt handling system.
  */
 void interrupt_setup(){
-    PIC_remap(0x20, 0x2F);
+    PIC_remap(0x20, 0x28);
 
+    set_idt_gate(0x00, (uint64_t)exception_stub_0);
 
-    for (uint8_t i = 0; i < 32; ++i) {
-        set_idt_gate(i, (uint64_t)irq_stub);
-        interrupt_handlers[i] = time_interrupt_handler;
-    }
+    // for (uint8_t i = 0; i < 32; ++i) {
+    //     set_idt_gate(i, (uint64_t)irq_stub);
+    //     interrupt_handlers[i] = time_interrupt_handler;
+    // }
     for (uint8_t i = 0; i < 16; ++i) {
         set_idt_gate(0x20 + i, (uint64_t)irq_stub);
         interrupt_handlers[0x20 + i] = time_interrupt_handler;

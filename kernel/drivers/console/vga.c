@@ -103,7 +103,7 @@ void terminal_put_char(char c){
 		}
 	} else {
 		terminal_put_entry_at(c, terminal_color, terminal_row, terminal_column);
-		if (terminal_column >= VGA_WIDTH) {
+		if (terminal_column++ == VGA_WIDTH) {
 			terminal_column = 0;
 			if (terminal_row++ == VGA_HEIGHT){
 				terminal_row = 0;

@@ -36,6 +36,33 @@ void PIC_send_EOI(uint8_t irq);
 void IRQ_set_mask(uint8_t IRQline);
 void IRQ_clear_mask(uint8_t IRQline);
 void interrupt_setup();
+char scancode_to_ascii(uint8_t scancode);
+void exception_handler(uint8_t vector, uint64_t error_code);
+
+/** @brief An array of strings describing each type of exception. */
+static const char* exception_names[] = {
+    "Division By Zero",
+    "Debug",
+    "Non Maskable Interrupt",
+    "Breakpoint",
+    "Into Detected Overflow",
+    "Out of Bounds",
+    "Invalid Opcode",
+    "No Coprocessor",
+
+    "Double Fault",
+    "Coprocessor Segment Overrun",
+    "Bad TSS",
+    "Segment Not Present",
+    "Stack Fault",
+    "General Protection Fault",
+    "Page Fault",
+    "Unknown Interrupt",
+
+    "Coprocessor Fault",
+    "Alignment Check",
+    "Machine Check"
+};
 
 /**
  * @brief A lookup table for converting scancodes to ASCII characters without shift pressed.
@@ -74,6 +101,3 @@ enum caps_status{
     CAPS_OFF,
     CAPS_ON
 };
-
-
-char scancode_to_ascii(uint8_t scancode);

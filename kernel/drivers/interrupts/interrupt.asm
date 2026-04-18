@@ -1,7 +1,9 @@
 global irq_stub
 global keyboard_stub
+global exception_stub_0
 extern time_interrupt_handler
 extern keyboard_interrupt_handler
+extern exception_handler
 
 section .text
     irq_stub:
@@ -92,3 +94,10 @@ section .text
 
         iretq 
         
+    exception_stub_0:
+        push 0
+        lea rsi, [rel div_error_msg]
+        mov rdi, 0
+        call exception_handler
+
+    div_error_msg: db "Division by zero", 0
