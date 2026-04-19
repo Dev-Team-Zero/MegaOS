@@ -3,9 +3,12 @@
 extern void time_interrupt_handler();
 extern void keyboard_interrupt_handler();
 extern void (*interrupt_handlers[IDT_ENTRIES])();
-extern void irq_stub(void);
-extern void keyboard_stub(void);
-extern void exception_stub_0(void);
+extern void irq_stub();
+extern void keyboard_stub();
+extern void exception_stub_0();
+extern void exception_stub_13();
+extern void exception_stub_14();
+extern void exception_stub_generic();
 
 /**
  * @brief Sends an End-of-Interrupt (EOI) signal to the Programmable Interrupt Controller (PIC).
@@ -54,7 +57,6 @@ void PIC_remap(uint8_t offset1, uint8_t offset2){
     io_wait();
     outb(SLAVE_PIC_DATA, ICW4_8060);
     io_wait();
-
     
     outb(MASTER_PIC_DATA, 0xFF);
     outb(SLAVE_PIC_DATA, 0xFF);
@@ -88,6 +90,8 @@ void IRQ_set_mask(uint8_t IRQline){
 void IRQ_clear_mask(uint8_t IRQline){
     uint16_t port;
     uint8_t value;
+    terminal_write_string("unmasking ");
+    terminal_write_hex(IRQline);
 
     if(IRQline < 8) {
         port = MASTER_PIC_DATA;
@@ -96,40 +100,41 @@ void IRQ_clear_mask(uint8_t IRQline){
         IRQline -= 8;
     }
     value = inb(port) & ~(1 << IRQline);
-    outb(port, value);        
+    terminal_write_string(" ... ");
+    outb(port, value);   
+    terminal_write_string(" ... done;\n");     
 }
 
 /**
  * @brief Sets up the interrupt handling system.
  */
-void interrupt_setup(){
+void interrupt_setup() {
+    init_idt();
     PIC_remap(0x20, 0x28);
-
-    set_idt_gate(0x00, (uint64_t)exception_stub_0);
-
-    // for (uint8_t i = 0; i < 32; ++i) {
-    //     set_idt_gate(i, (uint64_t)irq_stub);
-    //     interrupt_handlers[i] = time_interrupt_handler;
-    // }
+    
+    for (uint8_t i = 0; i < 32; i++) {
+        set_idt_gate(i, (uint64_t)exception_stub_generic);
+    }
     for (uint8_t i = 0; i < 16; ++i) {
         set_idt_gate(0x20 + i, (uint64_t)irq_stub);
         interrupt_handlers[0x20 + i] = time_interrupt_handler;
     }
 
-    set_idt_gate(0x20, (uint64_t)irq_stub);
+    set_idt_gate(0x00, (uint64_t)exception_stub_0);
+    set_idt_gate(0x0D, (uint64_t)exception_stub_13);
+    set_idt_gate(0x0E, (uint64_t)exception_stub_14);
+    terminal_write_string("6\n");
+
     set_idt_gate(0x21, (uint64_t)keyboard_stub);
     interrupt_handlers[0x21] = keyboard_interrupt_handler;
 
-    init_idt();
     pit_init();
-    terminal_write_string("PIT initialized.\n");
-
-    terminal_write_string("Enabling interrupts.\n");
-    IRQ_clear_mask(0); 
-    IRQ_clear_mask(1);
-    terminal_write_string("Interrupts enabled.\n");
-
+    
     __asm__ volatile("sti");
+    terminal_write_string("sti survived\n");
+
+    IRQ_clear_mask(0);
+    IRQ_clear_mask(1);
 }
 
 /**

@@ -61,7 +61,8 @@ static const char* exception_names[] = {
 
     "Coprocessor Fault",
     "Alignment Check",
-    "Machine Check"
+    "Machine Check",
+    "Generic Fault"
 };
 
 /**

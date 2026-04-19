@@ -12,4 +12,5 @@ void kernel_main(){
     kfree(a);
     terminal_write_string("um\n");
     void print_start_symbol();
+    for(;;);
 }
