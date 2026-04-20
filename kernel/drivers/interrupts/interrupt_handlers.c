@@ -71,7 +71,15 @@ char scancode_to_ascii(uint8_t scancode) {
  */
 void exception_handler(uint8_t vector, uint64_t error_code){
     terminal_write_string("\n[KERNEL PANIC] ");
-    terminal_write_string(exception_names[vector]);
+    if(vector < 20){
+        terminal_write_string(exception_names[vector]);
+    } else {
+        terminal_write_string("Unknown exception");
+    }
+    terminal_write_string("\nVector: ");
+    terminal_write_hex(vector);
+    terminal_write_string("\nError code: ");
+    terminal_write_hex(error_code);
     terminal_write_string("\nSystem halted.");
     __asm__ volatile("cli; hlt");
 }

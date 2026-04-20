@@ -4,6 +4,7 @@ global exception_stub_0
 extern time_interrupt_handler
 extern keyboard_interrupt_handler
 extern exception_handler
+global exception_stub_8
 global exception_stub_13
 global exception_stub_14
 global exception_stub_generic
@@ -92,30 +93,28 @@ keyboard_stub:
     iretq 
         
 exception_stub_0:
-    push 0
-    lea rsi, [rel div_error_msg]
+    push 0 
     mov rdi, 0
+    mov rsi, 0
+    call exception_handler
+
+exception_stub_8:
+    mov rdi, 0x8
+    pop rsi
     call exception_handler
 
 exception_stub_13:
-    push 0
-    lea rsi, [rel GPF_msg]
     mov rdi, 0xD
+    pop rsi
     call exception_handler
 
 exception_stub_14:
-    push 0
-    lea rsi, [rel page_fault_msg]
     mov rdi, 0xE
+    pop rsi
     call exception_handler
 
 exception_stub_generic:
     push 0 
-    lea rsi, [rel generic_msg]
-    mov rdi, 19
+    mov rdi, 0xFF
+    mov rsi, 0
     call exception_handler
-
-div_error_msg: db "Division by zero", 0
-GPF_msg: db "GPF", 0
-page_fault_msg: db "page fault", 0
-generic_msg: db "uknown fault", 0

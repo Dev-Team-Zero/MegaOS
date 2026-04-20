@@ -6,6 +6,7 @@ extern void (*interrupt_handlers[IDT_ENTRIES])();
 extern void irq_stub();
 extern void keyboard_stub();
 extern void exception_stub_0();
+extern void exception_stub_8();
 extern void exception_stub_13();
 extern void exception_stub_14();
 extern void exception_stub_generic();
@@ -121,9 +122,9 @@ void interrupt_setup() {
     }
 
     set_idt_gate(0x00, (uint64_t)exception_stub_0);
+    set_idt_gate(0x08, (uint64_t)exception_stub_8);
     set_idt_gate(0x0D, (uint64_t)exception_stub_13);
     set_idt_gate(0x0E, (uint64_t)exception_stub_14);
-    terminal_write_string("6\n");
 
     set_idt_gate(0x21, (uint64_t)keyboard_stub);
     interrupt_handlers[0x21] = keyboard_interrupt_handler;
@@ -131,7 +132,6 @@ void interrupt_setup() {
     pit_init();
     
     __asm__ volatile("sti");
-    terminal_write_string("sti survived\n");
 
     IRQ_clear_mask(0);
     IRQ_clear_mask(1);
