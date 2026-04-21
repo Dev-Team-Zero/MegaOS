@@ -65,9 +65,10 @@ char scancode_to_ascii(uint8_t scancode) {
 } 
 
 /**
- * @brief Handles exceptions by printing an error message and halting the system.
- * @param vector The interrupt vector number.
- * @param error_code The error code associated with the exception.
+ * @brief Handles CPU exceptions.
+ * @param vector The exception vector.
+ * @param error_code The error code associated with the exception, usualy provided by the CPU for certain exceptions(moste of times the rsi register value is provided as error code).  
+ * This function prints a panic message with the exception name, vector, and error code, and then halts the system.
  */
 void exception_handler(uint8_t vector, uint64_t error_code){
     terminal_write_string("\n[KERNEL PANIC] ");
