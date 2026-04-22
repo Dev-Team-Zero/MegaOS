@@ -15,3 +15,4 @@ void console_process_key(char key);
 void console_command_handler(const char* command);
 void print_start_symbol();
 void set_color_info();
+void dispatch_interrupt(int vector);

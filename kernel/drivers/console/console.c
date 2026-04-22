@@ -98,7 +98,26 @@ void console_command_handler(const char* command){
             return;
         }
         terminal_color = fg | bg << 4;
-    } else{
+    } else if (strncmp(command, "int", 3) == 0){
+        if(command_length <= 4){
+            terminal_write_string("Use: int <number>.\n");
+            return;
+        }
+        command+=4;
+        uint8_t int_nr = 0;
+        while(*command != '\n' && *command != '\0'){
+            int_nr = int_nr * 10 + (*command - '0');
+            command++;
+        }
+        if(int_nr > 255){
+            terminal_write_string("Invalid interrupt number. Must be between 0 and 255.\n");
+            return;
+        }
+        
+        dispatch_interrupt(int_nr);
+
+    }
+    else{
         terminal_write_string("Command ");
         terminal_write_string(command);
         terminal_write_string(" was not found.\n");
@@ -118,4 +137,16 @@ void print_start_symbol(){
 void set_color_info(){
     terminal_write_string("Use: color <background> <foreground>.\n");
     terminal_write_string("BLACK = 0\t\t DARK_GREY = 8\nBLUE = 1\t\t  LIGHT_BLUE = 9\nGREEN = 2\t\t LIGHT_GREEN = 10\nCYAN = 3\t\t  LIGHT_CYAN = 11\nRED = 4\t\t   LIGHT_RED = 12\nMAGENTA = 5\t   LIGHT_MAGENTA = 13\nBROWN = 6\t\t LIGHT_BROWN = 14,\nLIGHT_GREY = 7\tWHITE = 15\n");
+}
+
+void dispatch_interrupt(int vector){
+    switch(vector){
+        case 0x00: asm volatile("int $0x00"); break;
+        case 0x08: asm volatile("int $0x08"); break;
+        case 0x0D: asm volatile("int $0x0D"); break;
+        case 0x0E: asm volatile("int $0x0E"); break;
+        case 0x20: asm volatile("int $0x20"); break;
+        case 0x21: asm volatile("int $0x21"); break;
+        default: terminal_write_string("Interrupt not implemented.\n");
+    }
 }
