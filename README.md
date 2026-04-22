@@ -4,7 +4,55 @@
 
 [![CodeQL Advanced](https://github.com/eu888/MegaOS/actions/workflows/codeql.yml/badge.svg)](https://github.com/eu888/MegaOS/actions/workflows/codeql.yml)
 
-MegaOS is an operating system designed from scratch.
+MegaOS is an bare-metal x86 64 bit kernel.
+
+## Features
+
+1. **Custom bootloader with long mode**
+
+    * Sets up GDT and pageing.
+    * GRUB multiboot support.
+
+2. **Display**
+
+    * VGA text mode driver with 16 colors.
+    * Cursor tracking.
+    * `\t`, `\n` and `\b` handling.
+    * Hex output.
+
+3. **Interrupts**
+
+    * Full 256 entry IDT.
+    * Master and slave PIC remap.
+    * PIT seted up at 100Hz(for now).
+    * CPU exception handlers for `0x00` (division by zero), `0x08` (double fault), `0x0D` (GPF) and `0x0E` (page fault) and a general one to prevent triple faults, upon triggering it will do a kernel panic.
+    * Seted up `IRQ 0` and `IRQ 1`.
+
+4. **Inputs**
+
+    * PS/2 keyboard handler with scancode to ASCII converion
+    * Shift and Caps lock support.
+
+5. **Shell**
+
+    * Command console at boot with some commands: `echo`, `color`, `clear` and `int`.
+        * `echo <text>`: This command prints the text after it.
+        * `color <background> <foreground>`: changes the background and foreground color from the 16 available colors:
+            * BLACK = 0&emsp;&emsp;&emsp;DARK_GREY = 8
+            * BLUE = 1&emsp;&emsp;&emsp;LIGHT_BLUE = 9
+            * GREEN = 2&emsp;&emsp;&emsp;LIGHT_GREEN = 10
+            * CYAN = 3&emsp;&emsp;&emsp;LIGHT_CYAN = 11
+            * RED = 4&emsp;&emsp;&emsp;LIGHT_RED = 12
+            * MAGENTA = 5&emsp;&emsp;&emsp;LIGHT_MAGENTA = 13
+            * BROWN = 6&emsp;&emsp;&emsp;LIGHT_BROWN = 14
+            * LIGHT_GREY = 7&emsp;&emsp;&emsp;WHITE = 15
+        * `clear`: clears the console scree.
+        * `int <interrupt>`: triggers the interrupt if its available.
+
+6. **Memory management**
+
+    * Bitmap page allocator.
+    * Heap allocator `kmalloc` and `kfree` with block splitting, coalescing and double-free detection.
 
 ## Installation and build
 
