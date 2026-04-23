@@ -139,6 +139,11 @@ void set_color_info(){
     terminal_write_string("BLACK = 0\t\t DARK_GREY = 8\nBLUE = 1\t\t  LIGHT_BLUE = 9\nGREEN = 2\t\t LIGHT_GREEN = 10\nCYAN = 3\t\t  LIGHT_CYAN = 11\nRED = 4\t\t   LIGHT_RED = 12\nMAGENTA = 5\t   LIGHT_MAGENTA = 13\nBROWN = 6\t\t LIGHT_BROWN = 14,\nLIGHT_GREY = 7\tWHITE = 15\n");
 }
 
+
+/**
+ * @brief Dispatches an interrupt based on its vector.
+ * @param vector The interrupt vector number.
+ */
 void dispatch_interrupt(int vector){
     switch(vector){
         case 0x00: asm volatile("int $0x00"); break;
