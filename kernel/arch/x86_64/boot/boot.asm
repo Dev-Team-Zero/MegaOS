@@ -11,9 +11,11 @@ extern long_mode_start
 section .data
 align 8
 gdt_start:
+    ; ring 0
     dq 0x0000000000000000
     dq 0x00AF9A000000FFFF    
     dq 0x00CF92000000FFFF    
+
 gdt_end:
 
 gdt_descriptor:
@@ -40,11 +42,6 @@ stack_top:
 section .text
 global _start
 _start:
-
-    ;setup_page_tables:
-    ;    mov eax, l3
-    ;    or eax, 0b11
-    ;    mov [l4], eax
     cli
         
     mov esp, stack_top
