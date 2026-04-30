@@ -59,3 +59,11 @@ uint8_t strncmp(const char* s1, const char* s2, size_t index){
     }
     return 0;
 }
+
+void *memset(void *dest, int val, size_t len){
+    uint8_t *ptr = (uint8_t *)dest;
+    while (len-- > 0) {
+        *ptr++ = (uint8_t)val;
+    }
+    return dest;
+}
